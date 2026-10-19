@@ -1,4 +1,4 @@
-# dic — 2D Digital Image Correlation with built-in validation
+# DIC — 2D Digital Image Correlation with built-in validation
 
 A research-grade, CPU-only command-line tool that measures **full-field 2D displacement and strain**
 from a sequence of speckle-pattern images, and that **quantifies its own accuracy** so an engineer
