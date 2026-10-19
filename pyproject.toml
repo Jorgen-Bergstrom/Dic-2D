@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dic"
+version = "1.0.0"
+description = "Research-grade 2D Digital Image Correlation (DIC) command-line application with built-in validation and uncertainty quantification"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "DIC project" }]
+keywords = ["digital image correlation", "DIC", "experimental mechanics", "full-field measurement"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+]
+
+# Pinned minimum versions. See DECISIONS.md for the rationale and licenses.
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "pillow>=9.5",
+    "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+fast = ["tqdm>=4.65"]           # nicer progress bars (optional)
+dev = ["pytest>=7.4", "ruff>=0.4"]
+
+[project.scripts]
+dic = "dic.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = ["slow: long-running integration tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E501"]

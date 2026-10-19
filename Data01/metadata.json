@@ -1,0 +1,2041 @@
+{
+  "arguments": {
+    "background": 128.0,
+    "coverage_tolerance": 0.01,
+    "dot_amplitude_max": 120.0,
+    "dot_amplitude_min": 70.0,
+    "dot_coverage": 0.5,
+    "dot_profile": "taper",
+    "dot_radius_max": 6.0,
+    "dot_radius_min": 3.0,
+    "dot_softness": 0.7,
+    "dry_run": false,
+    "gt_grid_nx": 16,
+    "gt_grid_ny": 16,
+    "height": 1024,
+    "interpolation_order": 3,
+    "min_dot_distance": 0.0,
+    "mode": "affine",
+    "movie_fps": 10.0,
+    "noise_multiplicative_sigma": 0.0,
+    "noise_sigma": 2.0,
+    "num_images": 100,
+    "output_dir": "examples/JB02",
+    "overwrite": false,
+    "rotation_deg": 0.0,
+    "sampling": "analytic",
+    "save_displacement_npy": false,
+    "save_ground_truth": true,
+    "save_masks": true,
+    "save_movie": true,
+    "save_qa_maps": false,
+    "seed": 0,
+    "sin_amplitude_x": 0.0,
+    "sin_amplitude_y": 0.0,
+    "sin_wavelength_x": null,
+    "sin_wavelength_y": null,
+    "strain_x": 0.4,
+    "strain_y": -0.1,
+    "translation_x": 0.0,
+    "translation_y": 0.0,
+    "width": 1024
+  },
+  "coverage": {
+    "coverage_any": 0.4995441436767578,
+    "coverage_error": -0.0004558563232421875,
+    "coverage_half_amplitude": 0.41339111328125,
+    "coverage_history": [
+      {
+        "coverage_any": 0.5892362594604492,
+        "iteration": 0,
+        "num_dots": 11017
+      },
+      {
+        "coverage_any": 0.4995441436767578,
+        "iteration": 1,
+        "num_dots": 8583
+      }
+    ],
+    "coverage_target": 0.5,
+    "iterations": 2,
+    "num_dots": 8583
+  },
+  "deformation": {
+    "image_center_px": [
+      511.5,
+      511.5
+    ],
+    "load_stepping": "t_i = i / (n - 1)",
+    "mode": "affine",
+    "total_rotation_deg": 0.0,
+    "total_strain_x": 0.4,
+    "total_strain_y": -0.1,
+    "total_translation_px": [
+      0.0,
+      0.0
+    ]
+  },
+  "deterministic": true,
+  "dots": {
+    "amplitude_mean": 95.045857132674,
+    "num_dots": 8583,
+    "radius_max_px": 5.999736888686178,
+    "radius_mean_px": 4.486556453770236,
+    "radius_min_px": 3.0011611782050975,
+    "radius_std_px": 0.8566857858991938
+  },
+  "file_naming": "image%0*d.png, 1-based, image 0 (undeformed reference) first",
+  "files": [
+    {
+      "path": "ground_truth.csv",
+      "sha256": "d4fd00fc17d78cbb1dc3c4da98d209bd7245458590cbb3493e876f5307a9164f",
+      "size_bytes": 23901
+    },
+    {
+      "path": "ground_truth_grid.csv",
+      "sha256": "90fcd44bd55a71bbc899d9581d5b1099c7fa4935eb99d0b5a98331cde97e3d0d",
+      "size_bytes": 4968652
+    },
+    {
+      "path": "image0001.png",
+      "sha256": "94fcd5a29b7cd7bbd7a60c86d9f77bc25bff167773a051f376372391f627a93a",
+      "size_bytes": 674006
+    },
+    {
+      "path": "image0002.png",
+      "sha256": "eb321dfa0766be0128ab13fab5f2167416b6c0d9bcacdaee593e781af9db0b87",
+      "size_bytes": 674023
+    },
+    {
+      "path": "image0003.png",
+      "sha256": "7b6bba35e27e3958272d1428835c9bdff4879a297057cd5dba027ca76a5aefc5",
+      "size_bytes": 673646
+    },
+    {
+      "path": "image0004.png",
+      "sha256": "4728204dcba7a6b04531d6ceff0196811a139ad7977c0b60d4c5ab473da4a99d",
+      "size_bytes": 673443
+    },
+    {
+      "path": "image0005.png",
+      "sha256": "d958db368b64a1245ffbe6b5c386f03ce3a1a97152e3058a42f45965dac89eec",
+      "size_bytes": 672767
+    },
+    {
+      "path": "image0006.png",
+      "sha256": "74981b042c26fb0e39f468e24dc30bf8d5d844a17988e65f53c6ca913c477e5b",
+      "size_bytes": 672792
+    },
+    {
+      "path": "image0007.png",
+      "sha256": "c8b35eb2753c289c4eed48000e13b882f78eca9da92734a82ee2de41b4364753",
+      "size_bytes": 672290
+    },
+    {
+      "path": "image0008.png",
+      "sha256": "bed7bcdb40c268b7862ccb6df3c3035afb610fd14181d4ff8979f97ed596c61e",
+      "size_bytes": 671990
+    },
+    {
+      "path": "image0009.png",
+      "sha256": "34facb5d1e3e781d014a540b4b844c18d15abc1eab55a338b662025d978eb049",
+      "size_bytes": 671168
+    },
+    {
+      "path": "image0010.png",
+      "sha256": "bcd5ce4a34348af47075b3f85e7543c0c61d8ef638983cc419d0a50e8ba4b4bf",
+      "size_bytes": 671428
+    },
+    {
+      "path": "image0011.png",
+      "sha256": "f1325d408e5ac9895afe0cbac072d0e9ee5df6cc3768c1bf0712de67fa06f799",
+      "size_bytes": 671112
+    },
+    {
+      "path": "image0012.png",
+      "sha256": "5ece8bafdae91221e84d5c5eecb6c43b578ee7a30bf5474ed876c86656142bb3",
+      "size_bytes": 670836
+    },
+    {
+      "path": "image0013.png",
+      "sha256": "12e32071cb07032b7ff809e305d29ed5ad9a7016fce6cf9b89f8b65f0039de48",
+      "size_bytes": 670438
+    },
+    {
+      "path": "image0014.png",
+      "sha256": "520130ec3ee45b30b3e6348729756f0928b8d9aaa7865bca924e26e48740e78a",
+      "size_bytes": 669896
+    },
+    {
+      "path": "image0015.png",
+      "sha256": "7275e290fd74bedaea86395f84a7bdce78e59323b5d0addaacff5e169f39b334",
+      "size_bytes": 669741
+    },
+    {
+      "path": "image0016.png",
+      "sha256": "6e7e43e3b2bba83ce7ffdd611ff54e32819cf219faac2ac784b745fae7cdc406",
+      "size_bytes": 669484
+    },
+    {
+      "path": "image0017.png",
+      "sha256": "e15d574be27e4d57ab1476814bce68cdcb23c34b826ba05b75ed83c4fc3eeba9",
+      "size_bytes": 669291
+    },
+    {
+      "path": "image0018.png",
+      "sha256": "aac181bf6688e6b55fc4ae90a73ba6a947dbc3edd673e551a9c27a90b96b25f4",
+      "size_bytes": 669035
+    },
+    {
+      "path": "image0019.png",
+      "sha256": "a030463e78bb2a2e05d2375bd681fb04571690d71a0f588bf64bfe2d2e41ed20",
+      "size_bytes": 668405
+    },
+    {
+      "path": "image0020.png",
+      "sha256": "039742819dc8e5805c3341c802d15ef4668f7c1f5238f6733ac44588bef03cbd",
+      "size_bytes": 668600
+    },
+    {
+      "path": "image0021.png",
+      "sha256": "49878188cf9e7466d54860c316cb8688efbf77203c8011fe168f9ae3b8965106",
+      "size_bytes": 667976
+    },
+    {
+      "path": "image0022.png",
+      "sha256": "d9dadf936948e3b50dd0bd920bc7f3cbd48c9c5181abfd86b7b69e072db5288d",
+      "size_bytes": 667825
+    },
+    {
+      "path": "image0023.png",
+      "sha256": "66f8542b424acf17335732edb3d7084d6529f6962ae8d615ba5ded0a453d3503",
+      "size_bytes": 667050
+    },
+    {
+      "path": "image0024.png",
+      "sha256": "91bdb54478c4deff498409921ab58a1a6bdd54e0ed742efae66ca72863d0ae48",
+      "size_bytes": 667241
+    },
+    {
+      "path": "image0025.png",
+      "sha256": "a3915e29dd1e5555007122ecc5b3d675eca12c7d8a034fad728b32d82fa5ec8f",
+      "size_bytes": 666706
+    },
+    {
+      "path": "image0026.png",
+      "sha256": "efcd6064d21e7b493bd4d4707c59fea3317156880f61e98e7fac0f343e37b56b",
+      "size_bytes": 666693
+    },
+    {
+      "path": "image0027.png",
+      "sha256": "267371c341b7ba8928b55556ee60146153a98f17f00641e22a861a15c89342f0",
+      "size_bytes": 666053
+    },
+    {
+      "path": "image0028.png",
+      "sha256": "3e546ebf822ec4db434092f5c9dfd679731eaa2d5514bf1c51b4890acc164970",
+      "size_bytes": 665987
+    },
+    {
+      "path": "image0029.png",
+      "sha256": "e0167f207f08cfca92f9a7cf87062416b5b307e34c1484a864892a90220486f9",
+      "size_bytes": 665326
+    },
+    {
+      "path": "image0030.png",
+      "sha256": "53f725868b52b5275d50b5b3086a413c93bf520de5f2c8566ff340ffe58bd5e5",
+      "size_bytes": 665012
+    },
+    {
+      "path": "image0031.png",
+      "sha256": "ea81ec334ee915061f7307fb5b1aa11fa1bbce25dd055f853cbd2ebca65042b2",
+      "size_bytes": 664500
+    },
+    {
+      "path": "image0032.png",
+      "sha256": "cd82b5c298fc2a75e80f68de29948436a1a20c53d402270d80de9df27cd085d1",
+      "size_bytes": 664157
+    },
+    {
+      "path": "image0033.png",
+      "sha256": "892d284e5aae9f4184f1116a7f5f5303dcfd9b3b9a04263348b46c407bfc8222",
+      "size_bytes": 664184
+    },
+    {
+      "path": "image0034.png",
+      "sha256": "25a04b0807b48c6229d3910d29d8267d9b02a1e2f9977004070f47037f599a66",
+      "size_bytes": 663334
+    },
+    {
+      "path": "image0035.png",
+      "sha256": "e369b7a6c32a4bd414f3c6b8f4d613ac0a480e6461d208bd9519bc1af5694a82",
+      "size_bytes": 663536
+    },
+    {
+      "path": "image0036.png",
+      "sha256": "0f3a97e00af789befe94ff2b6e48d4b83b17ce1d12f8cec3ae06e623ccc5babd",
+      "size_bytes": 663080
+    },
+    {
+      "path": "image0037.png",
+      "sha256": "1f286faceaf7d24185541558e832863603299d73d61117b0b206ad58fd7cd095",
+      "size_bytes": 663000
+    },
+    {
+      "path": "image0038.png",
+      "sha256": "768f952d08dfac4a9836eaa679eb17daf472a762ceeeba05ac124596f7f355e3",
+      "size_bytes": 662090
+    },
+    {
+      "path": "image0039.png",
+      "sha256": "fd054aee912e69313d37af20524c6c975f77464d54a5702297c1c47eea9220aa",
+      "size_bytes": 661972
+    },
+    {
+      "path": "image0040.png",
+      "sha256": "23a8c16c7eaa0dfdf7a3bdb1c731a52cc3225aa6a9e9242e5f4aff4fea23ac2a",
+      "size_bytes": 661418
+    },
+    {
+      "path": "image0041.png",
+      "sha256": "c1f7a6a92a46a64f8b48dcdcbe0dcaf55d58f06989f0507bbede5f1026dbcd79",
+      "size_bytes": 661161
+    },
+    {
+      "path": "image0042.png",
+      "sha256": "2b5c8519268af8306e1970f2305b3093512b3d1412e1b8ce4de4c70f225b8ced",
+      "size_bytes": 660723
+    },
+    {
+      "path": "image0043.png",
+      "sha256": "ec26e78334d59775230a55a7b967b263d9854d353c4d2291a3fe804dd56052c5",
+      "size_bytes": 660702
+    },
+    {
+      "path": "image0044.png",
+      "sha256": "72291c19ceb2e8a3ddbb9cfab65eb025ddbce1c47d935262d64ac2ba70a2c6cd",
+      "size_bytes": 659896
+    },
+    {
+      "path": "image0045.png",
+      "sha256": "4f7fde1c6b51392477661856f5c531d3369b0485ce36802a47f00b6081c0eb3b",
+      "size_bytes": 659772
+    },
+    {
+      "path": "image0046.png",
+      "sha256": "174a73c74bc4ee85ce950d57ce95ea2e1dff88baf2e18eebef6d5c41384dafba",
+      "size_bytes": 659366
+    },
+    {
+      "path": "image0047.png",
+      "sha256": "2e496c102fb0a83ab3e9f6628029a1fd0e5b0fc4256ef86bb48364237ba78a9c",
+      "size_bytes": 658696
+    },
+    {
+      "path": "image0048.png",
+      "sha256": "c4ee601843194ee6333aaaa753f8729bb91c8fc5ba3d20d9d3b89738348ff0c8",
+      "size_bytes": 658584
+    },
+    {
+      "path": "image0049.png",
+      "sha256": "fafe5d0901e498b33d78dac87803661175aed70a3d711c9325c4f445f04753b7",
+      "size_bytes": 657955
+    },
+    {
+      "path": "image0050.png",
+      "sha256": "999b7a931ab9d7eef8632911771b280fb86e74c52b930512433f7620f40798c5",
+      "size_bytes": 658221
+    },
+    {
+      "path": "image0051.png",
+      "sha256": "85f74dfddb239db91a4551574c87ed52d541e6e784f0d6da195390657830d491",
+      "size_bytes": 657616
+    },
+    {
+      "path": "image0052.png",
+      "sha256": "d87a73c5c078ef2d5c32225e0efae3d37fb0e7b8fcfbfaffa6ec130833dbfa59",
+      "size_bytes": 656867
+    },
+    {
+      "path": "image0053.png",
+      "sha256": "3e8cff19d6bba21ac020a4e0d0dd8edddb93cc9e8cccfe0230010b3c78cc3377",
+      "size_bytes": 656452
+    },
+    {
+      "path": "image0054.png",
+      "sha256": "84f5f76788d00258d0a5d3a5464d49031c209c23c90fb7a530e6bed3cbe33ab9",
+      "size_bytes": 655927
+    },
+    {
+      "path": "image0055.png",
+      "sha256": "22455ca25871aa088ae79e8b24a08ff0631e3d72ab8b69479f72df8862fb2522",
+      "size_bytes": 655933
+    },
+    {
+      "path": "image0056.png",
+      "sha256": "b21b3e428644b1ff1a496d37900e61eefa83d47088753d67f41f6fa1bf05f05d",
+      "size_bytes": 655257
+    },
+    {
+      "path": "image0057.png",
+      "sha256": "6f199d4fc0804bae15ece3855de2416bb9366d96b90822e2fc9f3ffd27ff8d78",
+      "size_bytes": 655069
+    },
+    {
+      "path": "image0058.png",
+      "sha256": "2342a695cee510f46a85a997ef93d8d0af7f91e8641696c3d0b5c2fe54e4c4bd",
+      "size_bytes": 654324
+    },
+    {
+      "path": "image0059.png",
+      "sha256": "0aedd6435f1b07655645c237db2a84a67db3381e5c8fe7ea14e0b208e5dccb49",
+      "size_bytes": 653949
+    },
+    {
+      "path": "image0060.png",
+      "sha256": "23c3d3465131401515a30e06594a24d336f08b8d7464fc6d49f5662f0c9db441",
+      "size_bytes": 653244
+    },
+    {
+      "path": "image0061.png",
+      "sha256": "c813e303dbf25f925a61d6437d56a2cc57b74d89369e003d056a5c7407b4e80f",
+      "size_bytes": 653665
+    },
+    {
+      "path": "image0062.png",
+      "sha256": "9d1cf498c1f5acfadab9551bf6de1bf49f6ca7de91736e311f8fd7bd5e268326",
+      "size_bytes": 652531
+    },
+    {
+      "path": "image0063.png",
+      "sha256": "668b7ca729832d49cbef08921afe3bb1de97e67d511f225844bdd9737886ef88",
+      "size_bytes": 652208
+    },
+    {
+      "path": "image0064.png",
+      "sha256": "f50a5651e198dc34410b56558e648a9674a3933b2bd74f2d217ed5d8ea03ab0c",
+      "size_bytes": 652068
+    },
+    {
+      "path": "image0065.png",
+      "sha256": "e72c886ffeac20b2c1637f0ce7c42418e01ef42e401ca3b1b28c3ecfc8db22a9",
+      "size_bytes": 651637
+    },
+    {
+      "path": "image0066.png",
+      "sha256": "68c190322fab38d4889da1d2a83e42661b970519ceb60a24e6f366390e7a96c2",
+      "size_bytes": 650982
+    },
+    {
+      "path": "image0067.png",
+      "sha256": "30ed881b0bcda8fa51c0fec1a1a1c1be277f0f6eb92fc3a66e1f23b527de4156",
+      "size_bytes": 650445
+    },
+    {
+      "path": "image0068.png",
+      "sha256": "0d2436198bfe2244ec57b11773b545e62b093cf3a9de3c15308119110b926ccc",
+      "size_bytes": 650344
+    },
+    {
+      "path": "image0069.png",
+      "sha256": "da2817eba22f2c86360f623886c264304d3c5ebb4e8179df34d5652ae464482b",
+      "size_bytes": 649894
+    },
+    {
+      "path": "image0070.png",
+      "sha256": "3f356428b38fb2f536a2e9fed2e0eca69196ddb5eac192a1ccfd4d7b9a40c8de",
+      "size_bytes": 649818
+    },
+    {
+      "path": "image0071.png",
+      "sha256": "b6adf26801990e048bb1f0f3dfaed3c1cf581131e844f4f157fd77111d994514",
+      "size_bytes": 649422
+    },
+    {
+      "path": "image0072.png",
+      "sha256": "83dbb89fbc22c8def5816cb6c34c59a9e8794b036ddd87e28fef9e462145789d",
+      "size_bytes": 649382
+    },
+    {
+      "path": "image0073.png",
+      "sha256": "19f697ecf3ab2f351d2fba144229c58a406cc1f0e7407f201e886e51d99e4709",
+      "size_bytes": 648924
+    },
+    {
+      "path": "image0074.png",
+      "sha256": "cca583591152663f48c7c52fb5eafa8079c758d66110f25d5c537e460de1a219",
+      "size_bytes": 648415
+    },
+    {
+      "path": "image0075.png",
+      "sha256": "0a157b2f8367a24af16471fde2f9bb4393a46c454f51937e1c424035bbac5d7c",
+      "size_bytes": 647905
+    },
+    {
+      "path": "image0076.png",
+      "sha256": "84e9d121b3a68fae5586814c54bea4eea8e2ec733cea6b0a82271a1e729c750c",
+      "size_bytes": 648078
+    },
+    {
+      "path": "image0077.png",
+      "sha256": "07d990aa2f12859f7675836626a0327d474fbddc5d80a6759cc9ad23d8f2dc6d",
+      "size_bytes": 647447
+    },
+    {
+      "path": "image0078.png",
+      "sha256": "784f083baa30365cc2057bc419a30ea3160ad87b6b04201c9aea224eb573ff7f",
+      "size_bytes": 646982
+    },
+    {
+      "path": "image0079.png",
+      "sha256": "6334a9092f6289449285730f0f1f86b203b3e0b3105bd21418b779e7f5bbd514",
+      "size_bytes": 646858
+    },
+    {
+      "path": "image0080.png",
+      "sha256": "273d45399c6facff02bcf4096e9ea09b134f72497419baa3520d6f84743dec1b",
+      "size_bytes": 646596
+    },
+    {
+      "path": "image0081.png",
+      "sha256": "f23b5c2e9296845c832da450bd505b7ffe636a39f202bf5af6311d0e25273679",
+      "size_bytes": 645875
+    },
+    {
+      "path": "image0082.png",
+      "sha256": "59f03123134286aca59396b6b0cf7f0322e5a3ff8daaad330dd5769036d66558",
+      "size_bytes": 645963
+    },
+    {
+      "path": "image0083.png",
+      "sha256": "c9c6b4e0ee179876d88983b0440b20b0c9af17f09e2276c36d595693ca0aff3a",
+      "size_bytes": 645936
+    },
+    {
+      "path": "image0084.png",
+      "sha256": "66a94d02e15ca618d151ada491b18bac7998d3047d60d7336cba65b6a70706ea",
+      "size_bytes": 644611
+    },
+    {
+      "path": "image0085.png",
+      "sha256": "c5c40dfe6a413880a5d272a4262d7b26509b34bff67b1521cdbb3f4a937743a5",
+      "size_bytes": 644727
+    },
+    {
+      "path": "image0086.png",
+      "sha256": "c690a63bb749161aa519e0b20755bf019b58e7b5e6b84fec6d84a6a309ef7de8",
+      "size_bytes": 644281
+    },
+    {
+      "path": "image0087.png",
+      "sha256": "3542385662bebb56a9833e00c9b38ee72399546f7f106526d421eb8f66ee104a",
+      "size_bytes": 643960
+    },
+    {
+      "path": "image0088.png",
+      "sha256": "6cd49253da77543bc8e65e000b2dfa8010c925ad5ddc7c14bb385e8a945396b6",
+      "size_bytes": 643579
+    },
+    {
+      "path": "image0089.png",
+      "sha256": "b4d07e68f9b23aaa2e37c99da3625b6e49efcc3e297ca768d37106876a41009b",
+      "size_bytes": 643234
+    },
+    {
+      "path": "image0090.png",
+      "sha256": "83ff6690e3a3077eec853fb72ad54e9c8a626f40c116d857642e269d60ff419b",
+      "size_bytes": 642675
+    },
+    {
+      "path": "image0091.png",
+      "sha256": "81d723f0d7019a0dac84725cab472628d6ccca41c02853fd9ee2f59b3b46b4ed",
+      "size_bytes": 642479
+    },
+    {
+      "path": "image0092.png",
+      "sha256": "c78d5874bec919a109eabc03e2adb0dc6110f6e24388c9285598fa0ce114e558",
+      "size_bytes": 641848
+    },
+    {
+      "path": "image0093.png",
+      "sha256": "3a3c7f9d27d8210cfbb3424f4f6496f8e4d798e89715478abae38988e4ca75b5",
+      "size_bytes": 641279
+    },
+    {
+      "path": "image0094.png",
+      "sha256": "68e0ff7902e36cc945aface461704025fdf150cdedea4422f3588602a1a1facc",
+      "size_bytes": 641250
+    },
+    {
+      "path": "image0095.png",
+      "sha256": "be1d2e99eb0241787442d9d1cc70af28318b1808fee177bf0bb2a172ba46969c",
+      "size_bytes": 640846
+    },
+    {
+      "path": "image0096.png",
+      "sha256": "47c2d325f15efedeb35b39335da4df9c147b2e1a1f933e441d283dc7b977d46e",
+      "size_bytes": 640811
+    },
+    {
+      "path": "image0097.png",
+      "sha256": "684e0f7fc96b686bcb9765e5dab053f1cd9cfaa5890b21e7b68a05caf17033b3",
+      "size_bytes": 640291
+    },
+    {
+      "path": "image0098.png",
+      "sha256": "3d05552822a5c86192d1dfdff67afc53f01e9aa0657de5d2b4895a9acf7e3de2",
+      "size_bytes": 639657
+    },
+    {
+      "path": "image0099.png",
+      "sha256": "ea262452471fb2bd6a50be64b2c1263989569bcc76bd223070e58044d85550dc",
+      "size_bytes": 639507
+    },
+    {
+      "path": "image0100.png",
+      "sha256": "1e060750947131b679f854cf68bdc43afe39514b2e0cf496bb519da17e2e3881",
+      "size_bytes": 638594
+    },
+    {
+      "path": "masks/mask0001.png",
+      "sha256": "5ed11e3dfe2f8a33a3cdd51e872a3db1a2fbbdab553aeea946ef9273a9f3e3f3",
+      "size_bytes": 3157
+    },
+    {
+      "path": "masks/mask0002.png",
+      "sha256": "101ca8003e1ff6d10802aabf5e55e65f1c105dc358c3fb4ba65f7a952379cf4a",
+      "size_bytes": 3156
+    },
+    {
+      "path": "masks/mask0003.png",
+      "sha256": "27832fa54195422325716b017cfc6c8d33cdcbb8a19726f39f108bfb409c44b7",
+      "size_bytes": 3152
+    },
+    {
+      "path": "masks/mask0004.png",
+      "sha256": "27832fa54195422325716b017cfc6c8d33cdcbb8a19726f39f108bfb409c44b7",
+      "size_bytes": 3152
+    },
+    {
+      "path": "masks/mask0005.png",
+      "sha256": "75478d470b3bbd5f0a6ead6e5a500af04ecdc7c486652dd345a436c683403569",
+      "size_bytes": 3148
+    },
+    {
+      "path": "masks/mask0006.png",
+      "sha256": "75478d470b3bbd5f0a6ead6e5a500af04ecdc7c486652dd345a436c683403569",
+      "size_bytes": 3148
+    },
+    {
+      "path": "masks/mask0007.png",
+      "sha256": "c59072d4d11b45674721b5a11f1bf3504f0d0604ee00d63d99f26d620eb383e0",
+      "size_bytes": 3145
+    },
+    {
+      "path": "masks/mask0008.png",
+      "sha256": "c59072d4d11b45674721b5a11f1bf3504f0d0604ee00d63d99f26d620eb383e0",
+      "size_bytes": 3145
+    },
+    {
+      "path": "masks/mask0009.png",
+      "sha256": "9a71b664ec71575230f77a96cc8cb0ac51e75fc3a19782b09c8d0351f1011e06",
+      "size_bytes": 3141
+    },
+    {
+      "path": "masks/mask0010.png",
+      "sha256": "9a71b664ec71575230f77a96cc8cb0ac51e75fc3a19782b09c8d0351f1011e06",
+      "size_bytes": 3141
+    },
+    {
+      "path": "masks/mask0011.png",
+      "sha256": "cf641440d86ba045bb02d0e1d50500e1cac2c6b65c44efd84d02d595d34b0745",
+      "size_bytes": 3137
+    },
+    {
+      "path": "masks/mask0012.png",
+      "sha256": "cf641440d86ba045bb02d0e1d50500e1cac2c6b65c44efd84d02d595d34b0745",
+      "size_bytes": 3137
+    },
+    {
+      "path": "masks/mask0013.png",
+      "sha256": "d3a70b7bb0b9b109da62c7b222893c8d6fc7824872187a7d12f5342285bf7402",
+      "size_bytes": 3133
+    },
+    {
+      "path": "masks/mask0014.png",
+      "sha256": "d3a70b7bb0b9b109da62c7b222893c8d6fc7824872187a7d12f5342285bf7402",
+      "size_bytes": 3133
+    },
+    {
+      "path": "masks/mask0015.png",
+      "sha256": "0a803338f5cb1997132121e9f1948e1e102566d89caf343842118e359e46cf38",
+      "size_bytes": 3129
+    },
+    {
+      "path": "masks/mask0016.png",
+      "sha256": "0a803338f5cb1997132121e9f1948e1e102566d89caf343842118e359e46cf38",
+      "size_bytes": 3129
+    },
+    {
+      "path": "masks/mask0017.png",
+      "sha256": "70e1bfcb956ed11ac741e7a60145a0a77140a7ccfb454232cc2176be4d0ce91a",
+      "size_bytes": 3125
+    },
+    {
+      "path": "masks/mask0018.png",
+      "sha256": "70e1bfcb956ed11ac741e7a60145a0a77140a7ccfb454232cc2176be4d0ce91a",
+      "size_bytes": 3125
+    },
+    {
+      "path": "masks/mask0019.png",
+      "sha256": "22dbccbc45135d2ee666749262e7acdea6a8b241ac92c15cf39b841a4d1266b9",
+      "size_bytes": 3121
+    },
+    {
+      "path": "masks/mask0020.png",
+      "sha256": "22dbccbc45135d2ee666749262e7acdea6a8b241ac92c15cf39b841a4d1266b9",
+      "size_bytes": 3121
+    },
+    {
+      "path": "masks/mask0021.png",
+      "sha256": "21ae1a788ee6ed61be27065d505f430cd1a8375c77b3016614d283e60b63131c",
+      "size_bytes": 3117
+    },
+    {
+      "path": "masks/mask0022.png",
+      "sha256": "21ae1a788ee6ed61be27065d505f430cd1a8375c77b3016614d283e60b63131c",
+      "size_bytes": 3117
+    },
+    {
+      "path": "masks/mask0023.png",
+      "sha256": "78099816558547c64e21bb4c4c4aa12edf0fb82b89257ab0353aa6f1bb12db6c",
+      "size_bytes": 3113
+    },
+    {
+      "path": "masks/mask0024.png",
+      "sha256": "78099816558547c64e21bb4c4c4aa12edf0fb82b89257ab0353aa6f1bb12db6c",
+      "size_bytes": 3113
+    },
+    {
+      "path": "masks/mask0025.png",
+      "sha256": "0ad7e98012aa81bc6ccb7f0f5ba8255ae0c68ce83e1191c41fff0190131ea3fb",
+      "size_bytes": 3110
+    },
+    {
+      "path": "masks/mask0026.png",
+      "sha256": "0ad7e98012aa81bc6ccb7f0f5ba8255ae0c68ce83e1191c41fff0190131ea3fb",
+      "size_bytes": 3110
+    },
+    {
+      "path": "masks/mask0027.png",
+      "sha256": "5854d8e3844f4bec8484725baf4f705a8dea1a1e37db565b4d63317ec25b84a7",
+      "size_bytes": 3105
+    },
+    {
+      "path": "masks/mask0028.png",
+      "sha256": "5854d8e3844f4bec8484725baf4f705a8dea1a1e37db565b4d63317ec25b84a7",
+      "size_bytes": 3105
+    },
+    {
+      "path": "masks/mask0029.png",
+      "sha256": "c25f5f34888bbce3a313c289c7982e285e9d8ee601b7016f6ff20f76c6fd9fb0",
+      "size_bytes": 3101
+    },
+    {
+      "path": "masks/mask0030.png",
+      "sha256": "c25f5f34888bbce3a313c289c7982e285e9d8ee601b7016f6ff20f76c6fd9fb0",
+      "size_bytes": 3101
+    },
+    {
+      "path": "masks/mask0031.png",
+      "sha256": "739dad80e783d386a20d9152af4dcd806ec9b5561ff0f089a3bc618032778467",
+      "size_bytes": 3097
+    },
+    {
+      "path": "masks/mask0032.png",
+      "sha256": "0a87bee062143743c2e919b6cc0a06f9274edd9cf6dd8a5111b1a32b729c161c",
+      "size_bytes": 3093
+    },
+    {
+      "path": "masks/mask0033.png",
+      "sha256": "0a87bee062143743c2e919b6cc0a06f9274edd9cf6dd8a5111b1a32b729c161c",
+      "size_bytes": 3093
+    },
+    {
+      "path": "masks/mask0034.png",
+      "sha256": "80101dfc11694ea1e5a05a1d841e51e88c2726502ab0e6b72ba3ff286ad157f6",
+      "size_bytes": 3088
+    },
+    {
+      "path": "masks/mask0035.png",
+      "sha256": "80101dfc11694ea1e5a05a1d841e51e88c2726502ab0e6b72ba3ff286ad157f6",
+      "size_bytes": 3088
+    },
+    {
+      "path": "masks/mask0036.png",
+      "sha256": "4100f60ed0122b688d9759ff6dc0b1f08f86c5c753790f3fd7485aaee58d658b",
+      "size_bytes": 3084
+    },
+    {
+      "path": "masks/mask0037.png",
+      "sha256": "4100f60ed0122b688d9759ff6dc0b1f08f86c5c753790f3fd7485aaee58d658b",
+      "size_bytes": 3084
+    },
+    {
+      "path": "masks/mask0038.png",
+      "sha256": "1dcf7a159900f5b1e479493a89f252343ba9a69562a1db7148a817863f15a5ea",
+      "size_bytes": 3081
+    },
+    {
+      "path": "masks/mask0039.png",
+      "sha256": "1dcf7a159900f5b1e479493a89f252343ba9a69562a1db7148a817863f15a5ea",
+      "size_bytes": 3081
+    },
+    {
+      "path": "masks/mask0040.png",
+      "sha256": "3fcb5203d4a9253fc38c2d55f0e3ed23c9d23cb87b8d7459bfea47afa53c45b2",
+      "size_bytes": 3077
+    },
+    {
+      "path": "masks/mask0041.png",
+      "sha256": "3fcb5203d4a9253fc38c2d55f0e3ed23c9d23cb87b8d7459bfea47afa53c45b2",
+      "size_bytes": 3077
+    },
+    {
+      "path": "masks/mask0042.png",
+      "sha256": "f887dd8f3ac51d019ad1fa0939e1b4d19bff032b828dcf5e3f239983a382b502",
+      "size_bytes": 3074
+    },
+    {
+      "path": "masks/mask0043.png",
+      "sha256": "f887dd8f3ac51d019ad1fa0939e1b4d19bff032b828dcf5e3f239983a382b502",
+      "size_bytes": 3074
+    },
+    {
+      "path": "masks/mask0044.png",
+      "sha256": "f90d63d133026d7aad9eb57f4a42faec5aa14140e771e0e4e582530476de83a1",
+      "size_bytes": 3069
+    },
+    {
+      "path": "masks/mask0045.png",
+      "sha256": "f90d63d133026d7aad9eb57f4a42faec5aa14140e771e0e4e582530476de83a1",
+      "size_bytes": 3069
+    },
+    {
+      "path": "masks/mask0046.png",
+      "sha256": "6947c343cabc028038f4823cc4afac68badf042365c473d263d26f62f2ec5ba4",
+      "size_bytes": 3065
+    },
+    {
+      "path": "masks/mask0047.png",
+      "sha256": "6947c343cabc028038f4823cc4afac68badf042365c473d263d26f62f2ec5ba4",
+      "size_bytes": 3065
+    },
+    {
+      "path": "masks/mask0048.png",
+      "sha256": "5502006b99ee4e4bda9ef5819ba03bac661a14c2410aad779af3a5574ff2aa3a",
+      "size_bytes": 3062
+    },
+    {
+      "path": "masks/mask0049.png",
+      "sha256": "5502006b99ee4e4bda9ef5819ba03bac661a14c2410aad779af3a5574ff2aa3a",
+      "size_bytes": 3062
+    },
+    {
+      "path": "masks/mask0050.png",
+      "sha256": "efb38366ea8178a780fa3f6f3781e744de26bccb0d9e404268562a6213a50189",
+      "size_bytes": 3058
+    },
+    {
+      "path": "masks/mask0051.png",
+      "sha256": "efb38366ea8178a780fa3f6f3781e744de26bccb0d9e404268562a6213a50189",
+      "size_bytes": 3058
+    },
+    {
+      "path": "masks/mask0052.png",
+      "sha256": "b627ade52722f526e1d4a1299b550d1a80fcbf8f937452e715365c5cdbe61d05",
+      "size_bytes": 3055
+    },
+    {
+      "path": "masks/mask0053.png",
+      "sha256": "b627ade52722f526e1d4a1299b550d1a80fcbf8f937452e715365c5cdbe61d05",
+      "size_bytes": 3055
+    },
+    {
+      "path": "masks/mask0054.png",
+      "sha256": "9e3d388897f78470a7df0dc0245d41f8385158d5d891a3ae216a26fd318fad87",
+      "size_bytes": 3050
+    },
+    {
+      "path": "masks/mask0055.png",
+      "sha256": "9e3d388897f78470a7df0dc0245d41f8385158d5d891a3ae216a26fd318fad87",
+      "size_bytes": 3050
+    },
+    {
+      "path": "masks/mask0056.png",
+      "sha256": "b21693575deb39d1625894e748193f772e3ba0265e2371152d17d19e37386665",
+      "size_bytes": 3046
+    },
+    {
+      "path": "masks/mask0057.png",
+      "sha256": "b21693575deb39d1625894e748193f772e3ba0265e2371152d17d19e37386665",
+      "size_bytes": 3046
+    },
+    {
+      "path": "masks/mask0058.png",
+      "sha256": "1abff7f2e9f1d04049cc6ae5b2d0c2216fd478699bb848304f735fab696fb207",
+      "size_bytes": 3042
+    },
+    {
+      "path": "masks/mask0059.png",
+      "sha256": "1abff7f2e9f1d04049cc6ae5b2d0c2216fd478699bb848304f735fab696fb207",
+      "size_bytes": 3042
+    },
+    {
+      "path": "masks/mask0060.png",
+      "sha256": "50d22719c28cbc233cef1f2d3ec9c6a42ce7eb52898b7f4fa6b70a1aba16b380",
+      "size_bytes": 3038
+    },
+    {
+      "path": "masks/mask0061.png",
+      "sha256": "50d22719c28cbc233cef1f2d3ec9c6a42ce7eb52898b7f4fa6b70a1aba16b380",
+      "size_bytes": 3038
+    },
+    {
+      "path": "masks/mask0062.png",
+      "sha256": "fe2b8334de87486d4ce7296cafa67d36683eabca4b13f68129616877c6cccdb0",
+      "size_bytes": 3034
+    },
+    {
+      "path": "masks/mask0063.png",
+      "sha256": "17504ecc67067e0a161c5d62107fc20bf1b1064371924d5c73a13260a23348fe",
+      "size_bytes": 3030
+    },
+    {
+      "path": "masks/mask0064.png",
+      "sha256": "17504ecc67067e0a161c5d62107fc20bf1b1064371924d5c73a13260a23348fe",
+      "size_bytes": 3030
+    },
+    {
+      "path": "masks/mask0065.png",
+      "sha256": "2ade817b3cbb5e27ad6fd4b2e6bd3b960859430c773f7a14b5d218d2fab70a1e",
+      "size_bytes": 3027
+    },
+    {
+      "path": "masks/mask0066.png",
+      "sha256": "2ade817b3cbb5e27ad6fd4b2e6bd3b960859430c773f7a14b5d218d2fab70a1e",
+      "size_bytes": 3027
+    },
+    {
+      "path": "masks/mask0067.png",
+      "sha256": "3af150ac249951ff98ea7ae81fbb19695a9c05b6d76a267d01c039acfebe00a3",
+      "size_bytes": 3023
+    },
+    {
+      "path": "masks/mask0068.png",
+      "sha256": "3af150ac249951ff98ea7ae81fbb19695a9c05b6d76a267d01c039acfebe00a3",
+      "size_bytes": 3023
+    },
+    {
+      "path": "masks/mask0069.png",
+      "sha256": "f9d425b4b243adeaf86f8561e89bd4d7a4bb1b0d6372232f38c465b85d91aacb",
+      "size_bytes": 3017
+    },
+    {
+      "path": "masks/mask0070.png",
+      "sha256": "f9d425b4b243adeaf86f8561e89bd4d7a4bb1b0d6372232f38c465b85d91aacb",
+      "size_bytes": 3017
+    },
+    {
+      "path": "masks/mask0071.png",
+      "sha256": "79cb7b7b8258512311220e72d3e74cbe0d10ff0751b5d9ff6a8dfc3edd26b305",
+      "size_bytes": 3011
+    },
+    {
+      "path": "masks/mask0072.png",
+      "sha256": "79cb7b7b8258512311220e72d3e74cbe0d10ff0751b5d9ff6a8dfc3edd26b305",
+      "size_bytes": 3011
+    },
+    {
+      "path": "masks/mask0073.png",
+      "sha256": "d4fc082f1159795d8eec2bfb7897ac7fbe5f5c579d03916dcd5e67d0255e43a1",
+      "size_bytes": 3007
+    },
+    {
+      "path": "masks/mask0074.png",
+      "sha256": "d4fc082f1159795d8eec2bfb7897ac7fbe5f5c579d03916dcd5e67d0255e43a1",
+      "size_bytes": 3007
+    },
+    {
+      "path": "masks/mask0075.png",
+      "sha256": "8467093e0d11c6291c1f1accc0f7bbb452dcaa7073ff40605e9fc5aba0052550",
+      "size_bytes": 3003
+    },
+    {
+      "path": "masks/mask0076.png",
+      "sha256": "8467093e0d11c6291c1f1accc0f7bbb452dcaa7073ff40605e9fc5aba0052550",
+      "size_bytes": 3003
+    },
+    {
+      "path": "masks/mask0077.png",
+      "sha256": "e953beaa93f35e11d2640b3bf6a75d5af3120ef5419efbcaf19c17a283effdbe",
+      "size_bytes": 2999
+    },
+    {
+      "path": "masks/mask0078.png",
+      "sha256": "e953beaa93f35e11d2640b3bf6a75d5af3120ef5419efbcaf19c17a283effdbe",
+      "size_bytes": 2999
+    },
+    {
+      "path": "masks/mask0079.png",
+      "sha256": "3040f8c334cd3f3269f31df35bf6d6061c2fedb5c649e1d6dec7740f18f22c12",
+      "size_bytes": 2996
+    },
+    {
+      "path": "masks/mask0080.png",
+      "sha256": "3040f8c334cd3f3269f31df35bf6d6061c2fedb5c649e1d6dec7740f18f22c12",
+      "size_bytes": 2996
+    },
+    {
+      "path": "masks/mask0081.png",
+      "sha256": "343377cd8fa2501604a385af9005bd4257ea2bc65576e1b2e779ba31aa03c2fa",
+      "size_bytes": 2993
+    },
+    {
+      "path": "masks/mask0082.png",
+      "sha256": "343377cd8fa2501604a385af9005bd4257ea2bc65576e1b2e779ba31aa03c2fa",
+      "size_bytes": 2993
+    },
+    {
+      "path": "masks/mask0083.png",
+      "sha256": "e74c2387720e6c319ce10ce1a5539371dc0164905ab11007e850090941d3ca97",
+      "size_bytes": 2989
+    },
+    {
+      "path": "masks/mask0084.png",
+      "sha256": "e74c2387720e6c319ce10ce1a5539371dc0164905ab11007e850090941d3ca97",
+      "size_bytes": 2989
+    },
+    {
+      "path": "masks/mask0085.png",
+      "sha256": "fb8b7351a4c1fdd3c2cbb0e1071f8f6971cd293b4af29f0a82fc68cdb7e062f1",
+      "size_bytes": 2985
+    },
+    {
+      "path": "masks/mask0086.png",
+      "sha256": "fb8b7351a4c1fdd3c2cbb0e1071f8f6971cd293b4af29f0a82fc68cdb7e062f1",
+      "size_bytes": 2985
+    },
+    {
+      "path": "masks/mask0087.png",
+      "sha256": "e635aff159339e73fd998176cbbde9076068ea71ca344752330ebb3c87fc15ce",
+      "size_bytes": 2982
+    },
+    {
+      "path": "masks/mask0088.png",
+      "sha256": "e635aff159339e73fd998176cbbde9076068ea71ca344752330ebb3c87fc15ce",
+      "size_bytes": 2982
+    },
+    {
+      "path": "masks/mask0089.png",
+      "sha256": "57fca6b456f068cff291d09d4e388961cfd7d56ab9591abc6a4b9fac26b74eff",
+      "size_bytes": 2977
+    },
+    {
+      "path": "masks/mask0090.png",
+      "sha256": "57fca6b456f068cff291d09d4e388961cfd7d56ab9591abc6a4b9fac26b74eff",
+      "size_bytes": 2977
+    },
+    {
+      "path": "masks/mask0091.png",
+      "sha256": "6733328740857767a397c7b1e4e488ecb759f35dbb7cde9b4e2693dcfa7bffe2",
+      "size_bytes": 2973
+    },
+    {
+      "path": "masks/mask0092.png",
+      "sha256": "f0648ffbd140a715f2e67850fa4916db0cbf2f21075150e141a92bc0e80e90e8",
+      "size_bytes": 2969
+    },
+    {
+      "path": "masks/mask0093.png",
+      "sha256": "f0648ffbd140a715f2e67850fa4916db0cbf2f21075150e141a92bc0e80e90e8",
+      "size_bytes": 2969
+    },
+    {
+      "path": "masks/mask0094.png",
+      "sha256": "c1945e1b484d65168934577aabc7acafb280af4801aacecdf75dfc02c24ba57f",
+      "size_bytes": 2965
+    },
+    {
+      "path": "masks/mask0095.png",
+      "sha256": "c1945e1b484d65168934577aabc7acafb280af4801aacecdf75dfc02c24ba57f",
+      "size_bytes": 2965
+    },
+    {
+      "path": "masks/mask0096.png",
+      "sha256": "5570c3c54b8f6f60c35267bbbc1f2e9e70a5fc7ae85f82bbe63d8bb758219713",
+      "size_bytes": 2962
+    },
+    {
+      "path": "masks/mask0097.png",
+      "sha256": "5570c3c54b8f6f60c35267bbbc1f2e9e70a5fc7ae85f82bbe63d8bb758219713",
+      "size_bytes": 2962
+    },
+    {
+      "path": "masks/mask0098.png",
+      "sha256": "cc619144cbc5c45c0cafee97b31c8310616a89943257a9c2194d33842ac9bbc1",
+      "size_bytes": 2957
+    },
+    {
+      "path": "masks/mask0099.png",
+      "sha256": "cc619144cbc5c45c0cafee97b31c8310616a89943257a9c2194d33842ac9bbc1",
+      "size_bytes": 2957
+    },
+    {
+      "path": "masks/mask0100.png",
+      "sha256": "31c91101fb12f7e8be3a674655ce9a9373b55d9cfb72a8cf44ee884904c691ea",
+      "size_bytes": 2953
+    },
+    {
+      "path": "sequence.mp4",
+      "sha256": "52488304a0c31ea9fa1a21848571e99179169ce542731a68fea32b050990d397",
+      "size_bytes": 8078122
+    }
+  ],
+  "grey_level_statistics": [
+    {
+      "image": "image0001.png",
+      "max": 137.9963207489578,
+      "mean": 87.9928906027595,
+      "min": 0.4707931974689963,
+      "valid_fraction": 1.0
+    },
+    {
+      "image": "image0002.png",
+      "max": 137.21239681909006,
+      "mean": 87.99864079077909,
+      "min": 1.4192730780450526,
+      "valid_fraction": 0.998046875
+    },
+    {
+      "image": "image0003.png",
+      "max": 136.9365781870398,
+      "mean": 88.04326217850934,
+      "min": 0.5916190183347911,
+      "valid_fraction": 0.99609375
+    },
+    {
+      "image": "image0004.png",
+      "max": 136.73129820440687,
+      "mean": 88.05894161181972,
+      "min": 0.7079987772259253,
+      "valid_fraction": 0.99609375
+    },
+    {
+      "image": "image0005.png",
+      "max": 136.81492520517426,
+      "mean": 88.13877761701119,
+      "min": 0.7156570866226808,
+      "valid_fraction": 0.994140625
+    },
+    {
+      "image": "image0006.png",
+      "max": 136.84601409622414,
+      "mean": 88.15038876149495,
+      "min": 0.38983357408386254,
+      "valid_fraction": 0.994140625
+    },
+    {
+      "image": "image0007.png",
+      "max": 138.64343416093942,
+      "mean": 88.21041833139434,
+      "min": 1.4774030897800277,
+      "valid_fraction": 0.9921875
+    },
+    {
+      "image": "image0008.png",
+      "max": 137.885166185473,
+      "mean": 88.21247822515335,
+      "min": 1.32505892774092,
+      "valid_fraction": 0.9921875
+    },
+    {
+      "image": "image0009.png",
+      "max": 137.249271129044,
+      "mean": 88.26345348787329,
+      "min": 0.5043921319234954,
+      "valid_fraction": 0.990234375
+    },
+    {
+      "image": "image0010.png",
+      "max": 136.9396866391833,
+      "mean": 88.24965045813754,
+      "min": 0.929799366682948,
+      "valid_fraction": 0.990234375
+    },
+    {
+      "image": "image0011.png",
+      "max": 137.39910281423022,
+      "mean": 88.29786343475506,
+      "min": 0.8415913686715308,
+      "valid_fraction": 0.98828125
+    },
+    {
+      "image": "image0012.png",
+      "max": 137.41368803597584,
+      "mean": 88.30551294332673,
+      "min": 0.5176241872650262,
+      "valid_fraction": 0.98828125
+    },
+    {
+      "image": "image0013.png",
+      "max": 137.21799046229998,
+      "mean": 88.36227520339955,
+      "min": 1.230738196219285,
+      "valid_fraction": 0.986328125
+    },
+    {
+      "image": "image0014.png",
+      "max": 138.1557122095094,
+      "mean": 88.3760603415427,
+      "min": 0.7417231021899235,
+      "valid_fraction": 0.986328125
+    },
+    {
+      "image": "image0015.png",
+      "max": 136.95588005023492,
+      "mean": 88.43306104913341,
+      "min": 0.4357487576634558,
+      "valid_fraction": 0.984375
+    },
+    {
+      "image": "image0016.png",
+      "max": 137.4273002393077,
+      "mean": 88.4301453970638,
+      "min": 0.8430553159142065,
+      "valid_fraction": 0.984375
+    },
+    {
+      "image": "image0017.png",
+      "max": 137.31425401952814,
+      "mean": 88.48173021363421,
+      "min": 1.3862082999391445,
+      "valid_fraction": 0.982421875
+    },
+    {
+      "image": "image0018.png",
+      "max": 137.14489865111548,
+      "mean": 88.4790432535153,
+      "min": -0.4727247118595379,
+      "valid_fraction": 0.982421875
+    },
+    {
+      "image": "image0019.png",
+      "max": 137.12646481313755,
+      "mean": 88.53220633948919,
+      "min": 0.4033266209595219,
+      "valid_fraction": 0.98046875
+    },
+    {
+      "image": "image0020.png",
+      "max": 137.8873823536685,
+      "mean": 88.533188122705,
+      "min": 1.6968494579785105,
+      "valid_fraction": 0.98046875
+    },
+    {
+      "image": "image0021.png",
+      "max": 136.91641067674328,
+      "mean": 88.59074533206277,
+      "min": 1.7763177583179113,
+      "valid_fraction": 0.978515625
+    },
+    {
+      "image": "image0022.png",
+      "max": 137.37635525384002,
+      "mean": 88.59210750633828,
+      "min": 0.21723311102995524,
+      "valid_fraction": 0.978515625
+    },
+    {
+      "image": "image0023.png",
+      "max": 137.0666522192239,
+      "mean": 88.64042721908312,
+      "min": 0.5828066636405822,
+      "valid_fraction": 0.9765625
+    },
+    {
+      "image": "image0024.png",
+      "max": 137.4744522074551,
+      "mean": 88.63755896481806,
+      "min": 1.4439087765547756,
+      "valid_fraction": 0.9765625
+    },
+    {
+      "image": "image0025.png",
+      "max": 137.20328854078298,
+      "mean": 88.68190332156327,
+      "min": 1.2025672622536794,
+      "valid_fraction": 0.974609375
+    },
+    {
+      "image": "image0026.png",
+      "max": 137.82841842995288,
+      "mean": 88.6932525110498,
+      "min": 1.2368129623857795,
+      "valid_fraction": 0.974609375
+    },
+    {
+      "image": "image0027.png",
+      "max": 137.5498388362806,
+      "mean": 88.76631284237543,
+      "min": 1.1235472053973652,
+      "valid_fraction": 0.97265625
+    },
+    {
+      "image": "image0028.png",
+      "max": 136.90562956811272,
+      "mean": 88.78950489057135,
+      "min": 1.4873663900700658,
+      "valid_fraction": 0.97265625
+    },
+    {
+      "image": "image0029.png",
+      "max": 137.2042289296524,
+      "mean": 88.86538541400367,
+      "min": -0.20141405155357361,
+      "valid_fraction": 0.970703125
+    },
+    {
+      "image": "image0030.png",
+      "max": 137.9156127338204,
+      "mean": 88.86837412728613,
+      "min": 0.5040870749331665,
+      "valid_fraction": 0.970703125
+    },
+    {
+      "image": "image0031.png",
+      "max": 137.3754310826449,
+      "mean": 88.9266196886264,
+      "min": 0.8045679505782353,
+      "valid_fraction": 0.96875
+    },
+    {
+      "image": "image0032.png",
+      "max": 137.13916574727705,
+      "mean": 88.99148142277036,
+      "min": 0.9578134334327384,
+      "valid_fraction": 0.966796875
+    },
+    {
+      "image": "image0033.png",
+      "max": 138.06023972689195,
+      "mean": 88.99775583345854,
+      "min": 0.5007770192411822,
+      "valid_fraction": 0.966796875
+    },
+    {
+      "image": "image0034.png",
+      "max": 137.53423466982014,
+      "mean": 89.06965222203408,
+      "min": 1.4275533269925509,
+      "valid_fraction": 0.96484375
+    },
+    {
+      "image": "image0035.png",
+      "max": 137.43418226070222,
+      "mean": 89.07655480336484,
+      "min": 0.09478850230037494,
+      "valid_fraction": 0.96484375
+    },
+    {
+      "image": "image0036.png",
+      "max": 137.89538289605716,
+      "mean": 89.13099904530173,
+      "min": 1.5166366800316462,
+      "valid_fraction": 0.962890625
+    },
+    {
+      "image": "image0037.png",
+      "max": 136.99729097433394,
+      "mean": 89.12173698966532,
+      "min": 1.4687472195216493,
+      "valid_fraction": 0.962890625
+    },
+    {
+      "image": "image0038.png",
+      "max": 137.4370958825137,
+      "mean": 89.1780417679451,
+      "min": 0.8827786612653208,
+      "valid_fraction": 0.9609375
+    },
+    {
+      "image": "image0039.png",
+      "max": 137.1565750209495,
+      "mean": 89.18350269459972,
+      "min": 0.7672519335635268,
+      "valid_fraction": 0.9609375
+    },
+    {
+      "image": "image0040.png",
+      "max": 137.0512796197326,
+      "mean": 89.25654817212752,
+      "min": 0.4267202749587007,
+      "valid_fraction": 0.958984375
+    },
+    {
+      "image": "image0041.png",
+      "max": 137.51617956576175,
+      "mean": 89.2647680101972,
+      "min": 0.06178223693058982,
+      "valid_fraction": 0.958984375
+    },
+    {
+      "image": "image0042.png",
+      "max": 136.91033928506678,
+      "mean": 89.3447773864374,
+      "min": 1.1451504485533412,
+      "valid_fraction": 0.95703125
+    },
+    {
+      "image": "image0043.png",
+      "max": 137.39240177473752,
+      "mean": 89.35360495692468,
+      "min": 0.9456656670658745,
+      "valid_fraction": 0.95703125
+    },
+    {
+      "image": "image0044.png",
+      "max": 136.95949635647725,
+      "mean": 89.42592550575935,
+      "min": 1.2440914522857671,
+      "valid_fraction": 0.955078125
+    },
+    {
+      "image": "image0045.png",
+      "max": 137.29102586735007,
+      "mean": 89.44416487887025,
+      "min": 0.774764129950567,
+      "valid_fraction": 0.955078125
+    },
+    {
+      "image": "image0046.png",
+      "max": 137.2110742659655,
+      "mean": 89.50600387571222,
+      "min": -0.20916418909414425,
+      "valid_fraction": 0.953125
+    },
+    {
+      "image": "image0047.png",
+      "max": 136.7229506903839,
+      "mean": 89.51947178873455,
+      "min": 0.48986942113416454,
+      "valid_fraction": 0.953125
+    },
+    {
+      "image": "image0048.png",
+      "max": 137.2766482161793,
+      "mean": 89.58480520195484,
+      "min": -0.4471757319863521,
+      "valid_fraction": 0.951171875
+    },
+    {
+      "image": "image0049.png",
+      "max": 136.78447758634653,
+      "mean": 89.60067781493896,
+      "min": 1.465247542670741,
+      "valid_fraction": 0.951171875
+    },
+    {
+      "image": "image0050.png",
+      "max": 138.31901083454932,
+      "mean": 89.66693802573046,
+      "min": 1.5487698540904606,
+      "valid_fraction": 0.94921875
+    },
+    {
+      "image": "image0051.png",
+      "max": 137.0153321216028,
+      "mean": 89.67317082207428,
+      "min": 0.28202738792279547,
+      "valid_fraction": 0.94921875
+    },
+    {
+      "image": "image0052.png",
+      "max": 137.30258274957637,
+      "mean": 89.72886062105658,
+      "min": 1.5727932611447129,
+      "valid_fraction": 0.947265625
+    },
+    {
+      "image": "image0053.png",
+      "max": 137.20533459534877,
+      "mean": 89.73571591532163,
+      "min": 0.9606963669754753,
+      "valid_fraction": 0.947265625
+    },
+    {
+      "image": "image0054.png",
+      "max": 137.69013141314787,
+      "mean": 89.79737093227138,
+      "min": 1.024488006106175,
+      "valid_fraction": 0.9453125
+    },
+    {
+      "image": "image0055.png",
+      "max": 137.57405251837488,
+      "mean": 89.80694237768328,
+      "min": 1.279732130602838,
+      "valid_fraction": 0.9453125
+    },
+    {
+      "image": "image0056.png",
+      "max": 138.68935379208648,
+      "mean": 89.87966047219734,
+      "min": 1.5403270680700274,
+      "valid_fraction": 0.943359375
+    },
+    {
+      "image": "image0057.png",
+      "max": 137.515095991274,
+      "mean": 89.90147485327779,
+      "min": 1.6195902716193515,
+      "valid_fraction": 0.943359375
+    },
+    {
+      "image": "image0058.png",
+      "max": 137.81031852238493,
+      "mean": 89.97970741831259,
+      "min": 1.4564484670423274,
+      "valid_fraction": 0.94140625
+    },
+    {
+      "image": "image0059.png",
+      "max": 136.84419207894203,
+      "mean": 90.01429150292904,
+      "min": 0.5901909803304513,
+      "valid_fraction": 0.94140625
+    },
+    {
+      "image": "image0060.png",
+      "max": 137.13741350411107,
+      "mean": 90.10069412174103,
+      "min": 0.7326750095218761,
+      "valid_fraction": 0.939453125
+    },
+    {
+      "image": "image0061.png",
+      "max": 137.0976646722211,
+      "mean": 90.13922264260808,
+      "min": 0.1621252988925317,
+      "valid_fraction": 0.939453125
+    },
+    {
+      "image": "image0062.png",
+      "max": 138.7727579230536,
+      "mean": 90.22078053628834,
+      "min": -0.016657364255914686,
+      "valid_fraction": 0.9375
+    },
+    {
+      "image": "image0063.png",
+      "max": 137.6020331536688,
+      "mean": 90.30576645056513,
+      "min": 1.0272850763553372,
+      "valid_fraction": 0.935546875
+    },
+    {
+      "image": "image0064.png",
+      "max": 136.8717138152557,
+      "mean": 90.33290391574155,
+      "min": 0.7825201362351475,
+      "valid_fraction": 0.935546875
+    },
+    {
+      "image": "image0065.png",
+      "max": 137.28970391969332,
+      "mean": 90.41833338919247,
+      "min": 0.5951939153069805,
+      "valid_fraction": 0.93359375
+    },
+    {
+      "image": "image0066.png",
+      "max": 137.28500607925702,
+      "mean": 90.44861813614202,
+      "min": 0.8988155769698727,
+      "valid_fraction": 0.93359375
+    },
+    {
+      "image": "image0067.png",
+      "max": 137.87011929632595,
+      "mean": 90.53299288747388,
+      "min": -0.41378908920721713,
+      "valid_fraction": 0.931640625
+    },
+    {
+      "image": "image0068.png",
+      "max": 138.09290149775197,
+      "mean": 90.55789291271597,
+      "min": 0.22700065486678422,
+      "valid_fraction": 0.931640625
+    },
+    {
+      "image": "image0069.png",
+      "max": 136.74819789287494,
+      "mean": 90.63700936367869,
+      "min": 0.6563616126968421,
+      "valid_fraction": 0.9296875
+    },
+    {
+      "image": "image0070.png",
+      "max": 137.44311225060397,
+      "mean": 90.66056923339681,
+      "min": 0.4069234933089154,
+      "valid_fraction": 0.9296875
+    },
+    {
+      "image": "image0071.png",
+      "max": 137.00865314015184,
+      "mean": 90.7357293020467,
+      "min": 0.5239780408096602,
+      "valid_fraction": 0.927734375
+    },
+    {
+      "image": "image0072.png",
+      "max": 137.63264454368218,
+      "mean": 90.75146018834191,
+      "min": 1.6656026218980902,
+      "valid_fraction": 0.927734375
+    },
+    {
+      "image": "image0073.png",
+      "max": 138.18695571133293,
+      "mean": 90.81887754372065,
+      "min": 1.201553311639321,
+      "valid_fraction": 0.92578125
+    },
+    {
+      "image": "image0074.png",
+      "max": 137.33551147163075,
+      "mean": 90.83332107327186,
+      "min": 0.5680135340054795,
+      "valid_fraction": 0.92578125
+    },
+    {
+      "image": "image0075.png",
+      "max": 138.96589939600648,
+      "mean": 90.89910338088859,
+      "min": 0.8045609390663406,
+      "valid_fraction": 0.923828125
+    },
+    {
+      "image": "image0076.png",
+      "max": 137.70206094752592,
+      "mean": 90.91418811026952,
+      "min": 1.1078649414680308,
+      "valid_fraction": 0.923828125
+    },
+    {
+      "image": "image0077.png",
+      "max": 137.44754447830684,
+      "mean": 90.97477738260554,
+      "min": 0.9589216727263379,
+      "valid_fraction": 0.921875
+    },
+    {
+      "image": "image0078.png",
+      "max": 137.74654475786986,
+      "mean": 90.98886027644062,
+      "min": 1.1526756109964715,
+      "valid_fraction": 0.921875
+    },
+    {
+      "image": "image0079.png",
+      "max": 137.4568454468115,
+      "mean": 91.05129253429014,
+      "min": 1.0118055338104606,
+      "valid_fraction": 0.919921875
+    },
+    {
+      "image": "image0080.png",
+      "max": 137.64257491574497,
+      "mean": 91.05970423165277,
+      "min": 0.9859304454922881,
+      "valid_fraction": 0.919921875
+    },
+    {
+      "image": "image0081.png",
+      "max": 137.7359201376139,
+      "mean": 91.11929448838207,
+      "min": 1.1318338132810748,
+      "valid_fraction": 0.91796875
+    },
+    {
+      "image": "image0082.png",
+      "max": 137.88047429564983,
+      "mean": 91.13194059864989,
+      "min": 0.6692057965552616,
+      "valid_fraction": 0.91796875
+    },
+    {
+      "image": "image0083.png",
+      "max": 137.9333255096298,
+      "mean": 91.1960500347692,
+      "min": -0.0051953099995092344,
+      "valid_fraction": 0.916015625
+    },
+    {
+      "image": "image0084.png",
+      "max": 137.58459554728768,
+      "mean": 91.21669857735105,
+      "min": 0.2162220136363624,
+      "valid_fraction": 0.916015625
+    },
+    {
+      "image": "image0085.png",
+      "max": 137.58322647346625,
+      "mean": 91.28494730253864,
+      "min": 1.038125140532637,
+      "valid_fraction": 0.9140625
+    },
+    {
+      "image": "image0086.png",
+      "max": 137.1931617665253,
+      "mean": 91.30495320366548,
+      "min": 0.01365934451538564,
+      "valid_fraction": 0.9140625
+    },
+    {
+      "image": "image0087.png",
+      "max": 137.50201280478458,
+      "mean": 91.37465620289072,
+      "min": 1.7304430777519286,
+      "valid_fraction": 0.912109375
+    },
+    {
+      "image": "image0088.png",
+      "max": 136.94579554623854,
+      "mean": 91.39968899220281,
+      "min": 0.5108608771009742,
+      "valid_fraction": 0.912109375
+    },
+    {
+      "image": "image0089.png",
+      "max": 137.3370814673038,
+      "mean": 91.46959753382036,
+      "min": 1.4851212898876014,
+      "valid_fraction": 0.91015625
+    },
+    {
+      "image": "image0090.png",
+      "max": 136.9217360551409,
+      "mean": 91.49610322119699,
+      "min": 1.0742722986450062,
+      "valid_fraction": 0.91015625
+    },
+    {
+      "image": "image0091.png",
+      "max": 136.54883961975506,
+      "mean": 91.5731493241675,
+      "min": 0.8818035101855166,
+      "valid_fraction": 0.908203125
+    },
+    {
+      "image": "image0092.png",
+      "max": 137.96302111287523,
+      "mean": 91.64905206967272,
+      "min": 0.6170078810486537,
+      "valid_fraction": 0.90625
+    },
+    {
+      "image": "image0093.png",
+      "max": 137.55771604164119,
+      "mean": 91.6710819004174,
+      "min": 0.14006774490152551,
+      "valid_fraction": 0.90625
+    },
+    {
+      "image": "image0094.png",
+      "max": 138.01968377005971,
+      "mean": 91.74760391443363,
+      "min": 1.2388997442017189,
+      "valid_fraction": 0.904296875
+    },
+    {
+      "image": "image0095.png",
+      "max": 137.23094076149636,
+      "mean": 91.76318707176554,
+      "min": 1.152251463206353,
+      "valid_fraction": 0.904296875
+    },
+    {
+      "image": "image0096.png",
+      "max": 137.41347457333768,
+      "mean": 91.83001633894222,
+      "min": 1.2527929007404373,
+      "valid_fraction": 0.90234375
+    },
+    {
+      "image": "image0097.png",
+      "max": 137.37662887119092,
+      "mean": 91.84613976751109,
+      "min": 0.4667732459877403,
+      "valid_fraction": 0.90234375
+    },
+    {
+      "image": "image0098.png",
+      "max": 137.72478767285665,
+      "mean": 91.90525138613091,
+      "min": 1.6703406563664451,
+      "valid_fraction": 0.900390625
+    },
+    {
+      "image": "image0099.png",
+      "max": 137.68339190069665,
+      "mean": 91.91238501155507,
+      "min": -0.8828354494582804,
+      "valid_fraction": 0.900390625
+    },
+    {
+      "image": "image0100.png",
+      "max": 137.38277038127737,
+      "mean": 91.96987866651247,
+      "min": 1.09755577106072,
+      "valid_fraction": 0.8984375
+    }
+  ],
+  "ground_truth": {
+    "columns_grid": [
+      "image_index",
+      "image",
+      "t",
+      "X_px",
+      "Y_px",
+      "x_px",
+      "y_px",
+      "ux_px",
+      "uy_px",
+      "eps_xx",
+      "eps_yy",
+      "gamma_xy",
+      "eps_xx_img",
+      "eps_yy_img",
+      "gamma_xy_img",
+      "J11",
+      "J12",
+      "J21",
+      "J22",
+      "in_ref",
+      "in_def"
+    ],
+    "columns_image": [
+      "image_index",
+      "image",
+      "t",
+      "F11",
+      "F12",
+      "F21",
+      "F22",
+      "tx_px",
+      "ty_px",
+      "e_x_t",
+      "e_y_t",
+      "theta_t_deg",
+      "eps_xx",
+      "eps_yy",
+      "gamma_xy",
+      "strain_uniform",
+      "eps_xx_img_mean",
+      "eps_yy_img_mean",
+      "gamma_xy_img_mean",
+      "F_lambda_max",
+      "F_det",
+      "u_max_px",
+      "u_mean_px",
+      "valid_fraction"
+    ],
+    "displacement_field_npy": null,
+    "grid_csv": "ground_truth_grid.csv",
+    "grid_points": [
+      16,
+      16
+    ],
+    "per_image_csv": "ground_truth.csv",
+    "strain_convention": "engineering / small strain: eps_xx = e_x * t, eps_yy = e_y * t, gamma_xy = 0 (parameter strains, uniform for the affine model); eps_*_img are the components of sym(J) - I in the image frame",
+    "written": true
+  },
+  "mask_convention": "mask*.png: 255 = valid (correlate), 0 = invalid (no speckle data)",
+  "metadata_format_version": 1,
+  "movie": {
+    "codec": "h264",
+    "container": "mp4",
+    "filename": "sequence.mp4",
+    "fps": 10.0,
+    "frames": 100,
+    "height": 1024,
+    "pixel_format": "yuv420p",
+    "size_bytes": 8078122,
+    "width": 1024,
+    "written": true
+  },
+  "noise": {
+    "additive_sigma_grey_levels": 2.0,
+    "applied_to": "every image, independently, after warping",
+    "clipping": "grey levels clipped to [0, 255] and rounded when writing the 8-bit PNG",
+    "multiplicative_sigma": 0.0
+  },
+  "notes": [
+    "This directory is fully regenerated by dicgen; unrelated files are never touched.",
+    "Same seed + same arguments produce byte-identical files.",
+    "Displacement/strain values are analytic ground truth, not measured."
+  ],
+  "sampling": {
+    "interpolation_library": null,
+    "interpolation_order": null,
+    "method": "analytic",
+    "out_of_bounds": "filled with the background grey level and flagged invalid in the mask",
+    "valid_mask": "X inside [0, W-1] x [0, H-1]; bicubic mode also shrinks by 2 px of stencil"
+  },
+  "sequence": {
+    "deformed_coordinates": "x = center + F_i (X - center) + t_i * T",
+    "filename_pattern": "image%04d.png",
+    "filenames": [
+      "image0001.png",
+      "image0002.png",
+      "image0003.png",
+      "image0004.png",
+      "image0005.png",
+      "image0006.png",
+      "image0007.png",
+      "image0008.png",
+      "image0009.png",
+      "image0010.png",
+      "image0011.png",
+      "image0012.png",
+      "image0013.png",
+      "image0014.png",
+      "image0015.png",
+      "image0016.png",
+      "image0017.png",
+      "image0018.png",
+      "image0019.png",
+      "image0020.png",
+      "image0021.png",
+      "image0022.png",
+      "image0023.png",
+      "image0024.png",
+      "image0025.png",
+      "image0026.png",
+      "image0027.png",
+      "image0028.png",
+      "image0029.png",
+      "image0030.png",
+      "image0031.png",
+      "image0032.png",
+      "image0033.png",
+      "image0034.png",
+      "image0035.png",
+      "image0036.png",
+      "image0037.png",
+      "image0038.png",
+      "image0039.png",
+      "image0040.png",
+      "image0041.png",
+      "image0042.png",
+      "image0043.png",
+      "image0044.png",
+      "image0045.png",
+      "image0046.png",
+      "image0047.png",
+      "image0048.png",
+      "image0049.png",
+      "image0050.png",
+      "image0051.png",
+      "image0052.png",
+      "image0053.png",
+      "image0054.png",
+      "image0055.png",
+      "image0056.png",
+      "image0057.png",
+      "image0058.png",
+      "image0059.png",
+      "image0060.png",
+      "image0061.png",
+      "image0062.png",
+      "image0063.png",
+      "image0064.png",
+      "image0065.png",
+      "image0066.png",
+      "image0067.png",
+      "image0068.png",
+      "image0069.png",
+      "image0070.png",
+      "image0071.png",
+      "image0072.png",
+      "image0073.png",
+      "image0074.png",
+      "image0075.png",
+      "image0076.png",
+      "image0077.png",
+      "image0078.png",
+      "image0079.png",
+      "image0080.png",
+      "image0081.png",
+      "image0082.png",
+      "image0083.png",
+      "image0084.png",
+      "image0085.png",
+      "image0086.png",
+      "image0087.png",
+      "image0088.png",
+      "image0089.png",
+      "image0090.png",
+      "image0091.png",
+      "image0092.png",
+      "image0093.png",
+      "image0094.png",
+      "image0095.png",
+      "image0096.png",
+      "image0097.png",
+      "image0098.png",
+      "image0099.png",
+      "image0100.png"
+    ],
+    "ground_truth_displacement": "u(X) = x - X",
+    "image_center_px": [
+      511.5,
+      511.5
+    ],
+    "image_size_px": [
+      1024,
+      1024
+    ],
+    "load_fraction": "t_i = i / (n - 1)",
+    "num_images": 100,
+    "reference_image": "image0001.png"
+  },
+  "speckle": {
+    "background_grey": 128.0,
+    "dot_amplitude_max": 120.0,
+    "dot_amplitude_min": 70.0,
+    "dot_coverage_target": 0.5,
+    "dot_coverage_tolerance": 0.01,
+    "dot_profile": "taper",
+    "dot_radius_max_px": 6.0,
+    "dot_radius_min_px": 3.0,
+    "dot_softness_px": 0.7,
+    "height": 1024,
+    "min_dot_distance_px": 0.0,
+    "width": 1024
+  },
+  "summary": {
+    "coverage_achieved": 0.4995441436767578,
+    "coverage_target": 0.5,
+    "displacement_max_px": 210.89685275034324,
+    "num_dots": 8583,
+    "valid_fraction_mean": 0.9490625
+  },
+  "tool": "dicgen",
+  "version": "1.0.0",
+  "wall_clock_timestamps": false
+}

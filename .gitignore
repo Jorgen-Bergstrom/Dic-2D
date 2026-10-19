@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Editors / OS
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# --------------------------------------------------------------------------------------
+# Generated output
+# --------------------------------------------------------------------------------------
+# `runs/` holds complete example runs.  They are large (hundreds of MB: one PNG per frame
+# per field, plus animations) and fully reproducible, so they are not tracked.
+# Regenerate with:  python -m dic Data01 runs/Data01_full
+runs/
+out/
+output/
+demo_data/
+*_out/
+
+# --------------------------------------------------------------------------------------
+# Working files (not part of the deliverable)
+# --------------------------------------------------------------------------------------
+# Task briefs and scratch notes.  Remove these lines if you want the brief in the repo
+# (e.g. rename Prompt2.md to docs/TASK.md).
+Prompt1.md
+Prompt2.md
+draft*.txt
