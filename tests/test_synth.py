@@ -47,10 +47,14 @@ def test_ground_truth_fields_are_consistent_with_displacement():
     gt = ground_truth_fields(D, xs, ys)
     assert np.allclose(gt["ux"], 0.2 * (xs - 50.0))
     assert np.allclose(gt["uy"], -0.05 * (ys - 50.0))
-    assert np.allclose(gt["exx"], 0.2)
-    assert np.allclose(gt["eyy"], -0.05)
-    # Green-Lagrange for a uniaxial stretch
-    assert np.allclose(gt["Exx"], 0.5 * (1.2 ** 2 - 1))
+    assert np.allclose(gt["Eeng_xx"], 0.2)
+    assert np.allclose(gt["Eeng_yy"], -0.05)
+    assert np.allclose(gt["Eeng_xy"], 0.0)
+    assert np.allclose(gt["Eeng_gamma_xy"], 0.0)
+    # true (logarithmic) strain for a uniaxial stretch
+    assert np.allclose(gt["Etr_xx"], np.log(1.2))
+    assert np.allclose(gt["Etr_yy"], np.log(0.95))
+    assert np.allclose(gt["Etr_xy"], 0.0)
 
 
 def test_render_deformation_moves_the_pattern():

@@ -51,7 +51,7 @@ def test_fit_gradients_reports_nan_near_invalid_samples():
     assert ok[3, 3]
 
 
-def test_compute_strains_engineering_and_green_lagrange_agree_at_small_strain():
+def test_compute_strains_nominal_and_true_agree_at_small_strain():
     ny, nx = 30, 30
     dx = dy = 2.0
     ys, xs = np.mgrid[0:ny, 0:nx]
@@ -61,15 +61,17 @@ def test_compute_strains_engineering_and_green_lagrange_agree_at_small_strain():
     valid = np.ones_like(ux, dtype=bool)
     sr = compute_strains(ux, uy, valid, dx, dy, StrainConfig(window=5), subset_size=31)
     interior = sr.valid
-    assert np.nanmean(sr["exx"][interior]) == pytest.approx(ex, abs=1e-9)
-    assert np.nanmean(sr["eyy"][interior]) == pytest.approx(ey, abs=1e-9)
-    assert np.nanmean(sr["gamma_xy"][interior]) == pytest.approx(gam, abs=1e-9)
-    # at small strain the Green-Lagrange tensor equals the engineering tensor
-    assert np.nanmean(sr["Exx"][interior]) == pytest.approx(ex, abs=1e-6)
-    assert np.nanmean(sr["Eyy"][interior]) == pytest.approx(ey, abs=1e-6)
+    assert np.nanmean(sr["Eeng_xx"][interior]) == pytest.approx(ex, abs=1e-9)
+    assert np.nanmean(sr["Eeng_yy"][interior]) == pytest.approx(ey, abs=1e-9)
+    assert np.nanmean(sr["Eeng_gamma_xy"][interior]) == pytest.approx(gam, abs=1e-9)
+    assert np.nanmean(sr["Eeng_xy"][interior]) == pytest.approx(0.5 * gam, abs=1e-9)
+    # at small strain the true strain equals the nominal strain to first order
+    assert np.nanmean(sr["Etr_xx"][interior]) == pytest.approx(ex, abs=1e-6)
+    assert np.nanmean(sr["Etr_yy"][interior]) == pytest.approx(ey, abs=1e-6)
+    assert np.nanmean(sr["Etr_gamma_xy"][interior]) == pytest.approx(gam, abs=1e-6)
 
 
-def test_compute_strains_green_lagrange_differs_from_engineering_at_large_strain():
+def test_compute_strains_true_differs_from_nominal_at_large_strain():
     ny, nx = 30, 30
     dx = dy = 1.0
     ys, xs = np.mgrid[0:ny, 0:nx]
@@ -79,11 +81,21 @@ def test_compute_strains_green_lagrange_differs_from_engineering_at_large_strain
     valid = np.ones_like(ux, dtype=bool)
     sr = compute_strains(ux, uy, valid, dx, dy, StrainConfig(window=5), subset_size=21)
     interior = sr.valid
-    assert np.nanmean(sr["exx"][interior]) == pytest.approx(0.4, abs=1e-9)
-    assert np.nanmean(sr["Exx"][interior]) == pytest.approx(0.5 * (1.4 ** 2 - 1), abs=1e-6)
+    # nominal strain is lambda - 1; true strain is ln(lambda)
+    assert np.nanmean(sr["Eeng_xx"][interior]) == pytest.approx(0.4, abs=1e-9)
+    assert np.nanmean(sr["Eeng_yy"][interior]) == pytest.approx(0.0, abs=1e-9)
+    assert np.nanmean(sr["Eeng_1"][interior]) == pytest.approx(0.4, abs=1e-9)
+    assert np.nanmean(sr["Eeng_2"][interior]) == pytest.approx(0.0, abs=1e-9)
+    assert np.nanmean(sr["Etr_xx"][interior]) == pytest.approx(np.log(1.4), abs=1e-6)
+    assert np.nanmean(sr["Etr_yy"][interior]) == pytest.approx(0.0, abs=1e-9)
+    assert np.nanmean(sr["Etr_1"][interior]) == pytest.approx(np.log(1.4), abs=1e-6)
+    assert np.nanmean(sr["Etr_2"][interior]) == pytest.approx(0.0, abs=1e-9)
+    assert np.nanmean(sr["Etr_eq"][interior]) == pytest.approx(
+        2.0 / np.sqrt(3.0) * np.log(1.4), abs=1e-6
+    )
 
 
-def test_rotation_produces_zero_strain_and_correct_angle():
+def test_rotation_produces_zero_nominal_strain_and_correct_angle():
     ny, nx = 40, 40
     dx = dy = 1.0
     ys, xs = np.mgrid[0:ny, 0:nx]
@@ -96,13 +108,46 @@ def test_rotation_produces_zero_strain_and_correct_angle():
     valid = np.ones_like(ux, dtype=bool)
     sr = compute_strains(ux, uy, valid, dx, dy, StrainConfig(window=5), subset_size=21)
     interior = sr.valid
-    # the *finite* rotation has engineering strain cos(theta)-1 and zero Green-Lagrange strain
-    assert np.nanmean(sr["exx"][interior]) == pytest.approx(np.cos(theta) - 1, abs=1e-9)
-    assert np.nanmean(sr["eyy"][interior]) == pytest.approx(np.cos(theta) - 1, abs=1e-9)
-    assert abs(np.nanmean(sr["gamma_xy"][interior])) < 1e-9
-    assert abs(np.nanmean(sr["Exx"][interior])) < 1e-9
-    assert abs(np.nanmean(sr["Eyy"][interior])) < 1e-9
+    # nominal strain is V - I and true strain is ln(V), so a rigid rotation gives zero
+    assert abs(np.nanmean(sr["Eeng_xx"][interior])) < 1e-9
+    assert abs(np.nanmean(sr["Eeng_yy"][interior])) < 1e-9
+    assert abs(np.nanmean(sr["Eeng_gamma_xy"][interior])) < 1e-9
+    assert abs(np.nanmean(sr["Eeng_eq"][interior])) < 1e-9
+    assert abs(np.nanmean(sr["Etr_xx"][interior])) < 1e-9
+    assert abs(np.nanmean(sr["Etr_yy"][interior])) < 1e-9
+    assert abs(np.nanmean(sr["Etr_gamma_xy"][interior])) < 1e-9
+    assert abs(np.nanmean(sr["Etr_eq"][interior])) < 1e-9
     assert np.nanmean(sr["theta_deg"][interior]) == pytest.approx(5.0, abs=1e-6)
+
+
+def test_simple_shear_uses_left_stretch_not_sym_F():
+    ny, nx = 30, 30
+    dx = dy = 1.0
+    ys, xs = np.mgrid[0:ny, 0:nx]
+    gamma = 0.5
+    ux = gamma * ys * dy
+    uy = np.zeros_like(ux)
+    valid = np.ones_like(ux, dtype=bool)
+    sr = compute_strains(ux, uy, valid, dx, dy, StrainConfig(window=5), subset_size=21)
+    interior = sr.valid
+
+    F = np.array([[1.0, gamma], [0.0, 1.0]])
+    b = F @ F.T
+    eigvals, eigvecs = np.linalg.eigh(b)
+    V = eigvecs @ np.diag(np.sqrt(eigvals)) @ eigvecs.T
+    T = eigvecs @ np.diag(0.5 * np.log(eigvals)) @ eigvecs.T
+
+    assert np.nanmean(sr["Eeng_xx"][interior]) == pytest.approx(V[0, 0] - 1.0, abs=1e-9)
+    assert np.nanmean(sr["Eeng_yy"][interior]) == pytest.approx(V[1, 1] - 1.0, abs=1e-9)
+    assert np.nanmean(sr["Eeng_xy"][interior]) == pytest.approx(V[0, 1], abs=1e-9)
+    assert np.nanmean(sr["Eeng_gamma_xy"][interior]) == pytest.approx(2.0 * V[0, 1], abs=1e-9)
+    assert np.nanmean(sr["Etr_xx"][interior]) == pytest.approx(T[0, 0], abs=1e-9)
+    assert np.nanmean(sr["Etr_yy"][interior]) == pytest.approx(T[1, 1], abs=1e-9)
+    assert np.nanmean(sr["Etr_gamma_xy"][interior]) == pytest.approx(2.0 * T[0, 1], abs=1e-9)
+    assert np.nanmean(sr["Etr_1"][interior]) == pytest.approx(0.5 * np.log(eigvals[1]), abs=1e-9)
+    assert np.nanmean(sr["Etr_2"][interior]) == pytest.approx(0.5 * np.log(eigvals[0]), abs=1e-9)
+    # sym(F) - I would give Eeng_xx = 0; the nominal tensor does not
+    assert abs(np.nanmean(sr["Eeng_xx"][interior])) > 1e-3
 
 
 def test_equivalent_strain_is_zero_for_zero_strain():
@@ -111,4 +156,5 @@ def test_equivalent_strain_is_zero_for_zero_strain():
     uy = np.zeros((ny, nx))
     valid = np.ones((ny, nx), dtype=bool)
     sr = compute_strains(ux, uy, valid, 1.0, 1.0, StrainConfig(window=3), subset_size=11)
-    assert np.nanmax(np.abs(sr["eps_eq"])) == pytest.approx(0.0, abs=1e-12)
+    assert np.nanmax(np.abs(sr["Eeng_eq"])) == pytest.approx(0.0, abs=1e-12)
+    assert np.nanmax(np.abs(sr["Etr_eq"])) == pytest.approx(0.0, abs=1e-12)

@@ -7,11 +7,14 @@ respected:
 
 * coordinates are pixel centres in the **reference** image (``X_px``, ``Y_px``);
 * ``ux_px = x - X``, ``uy_px = y - Y``;
-* the comparable strain components are ``eps_xx_img``, ``eps_yy_img``, ``gamma_xy_img``
-  (components of ``sym(J) - I`` in the image frame), which correspond exactly to the engineering
-  strain reported here;
+* the comparable strain components are the nominal (Biot) strains ``Eeng_xx``, ``Eeng_yy`` and
+  ``Eeng_gamma_xy`` in the image frame, computed from the ground-truth deformation gradient
+  ``J``.  If the file has no ``J`` columns, the generator's engineering components
+  (``eps_xx_img`` in the provided dataset, or ``Eeng_xx`` in generated files) are used as a
+  fallback (the two coincide only in the small-strain limit);
 * ``in_ref`` / ``in_def`` flag whether a point is inside the reference / deformed image; a point
-  is only comparable when both are 1.
+  is only comparable when both are 1.  Files without these flags (the demo generator) are treated
+  as fully visible.
 """
 
 from __future__ import annotations
@@ -23,34 +26,68 @@ from pathlib import Path
 import numpy as np
 from scipy.interpolate import RegularGridInterpolator
 
+from .kinematics import left_stretch
 from .pipeline import RunResult
 
 logger = logging.getLogger(__name__)
 
 
+def _float(row: dict[str, str], *keys: str, default: float = np.nan) -> float:
+    """First finite value among *keys* in a CSV row."""
+    for key in keys:
+        value = row.get(key)
+        if value not in (None, ""):
+            return float(value)
+    return default
+
+
 def load_ground_truth_grid(path: str | Path) -> dict[int, dict[str, np.ndarray]]:
-    """Load ``ground_truth_grid.csv`` into a per-frame dict of arrays."""
+    """Load ``ground_truth_grid.csv`` into a per-frame dict of arrays.
+
+    The nominal strain is derived from the ``J11..J22`` columns when they are present;
+    otherwise the generator's engineering components are kept as a fallback.  Both the
+    provided-dataset headers (``eps_*_img``) and the demo-generator headers (``Eeng_*``) are
+    accepted.
+    """
     path = Path(path)
     if not path.is_file():
         raise FileNotFoundError(path)
     by_frame: dict[int, dict[str, list]] = {}
     with open(path) as fh:
-        for row in csv.DictReader(fh):
-            idx = int(row["image_index"])
+        reader = csv.DictReader(fh)
+        frame_key = "image_index" if "image_index" in (reader.fieldnames or []) else "frame"
+        for row in reader:
+            idx = int(row[frame_key])
             d = by_frame.setdefault(idx, {k: [] for k in (
-                "X", "Y", "ux", "uy", "exx", "eyy", "gxy", "in_ref", "in_def")})
-            d["X"].append(float(row["X_px"]))
-            d["Y"].append(float(row["Y_px"]))
-            d["ux"].append(float(row["ux_px"]))
-            d["uy"].append(float(row["uy_px"]))
-            d["exx"].append(float(row["eps_xx_img"]))
-            d["eyy"].append(float(row["eps_yy_img"]))
-            d["gxy"].append(float(row["gamma_xy_img"]))
-            d["in_ref"].append(int(row["in_ref"]))
-            d["in_def"].append(int(row["in_def"]))
-    return {
-        k: {kk: np.asarray(vv, dtype=float) for kk, vv in v.items()} for k, v in by_frame.items()
-    }
+                "X", "Y", "ux", "uy", "Eeng_xx_eng", "Eeng_yy_eng", "Eeng_gamma_xy_eng",
+                "J11", "J12", "J21", "J22", "in_ref", "in_def")})
+            d["X"].append(_float(row, "X_px"))
+            d["Y"].append(_float(row, "Y_px"))
+            d["ux"].append(_float(row, "ux_px"))
+            d["uy"].append(_float(row, "uy_px"))
+            d["Eeng_xx_eng"].append(_float(row, "eps_xx_img", "Eeng_xx"))
+            d["Eeng_yy_eng"].append(_float(row, "eps_yy_img", "Eeng_yy"))
+            d["Eeng_gamma_xy_eng"].append(_float(row, "gamma_xy_img", "Eeng_gamma_xy"))
+            for key in ("J11", "J12", "J21", "J22"):
+                d[key].append(_float(row, key))
+            d["in_ref"].append(_float(row, "in_ref", default=1.0))
+            d["in_def"].append(_float(row, "in_def", default=1.0))
+    out: dict[int, dict[str, np.ndarray]] = {}
+    for idx, values in by_frame.items():
+        arrays = {k: np.asarray(v, dtype=float) for k, v in values.items()}
+        if all(np.isfinite(arrays[k]).all() for k in ("J11", "J12", "J21", "J22")):
+            V11, V12, V22 = left_stretch(
+                arrays["J11"], arrays["J12"], arrays["J21"], arrays["J22"]
+            )
+            arrays["Eeng_xx"] = V11 - 1.0
+            arrays["Eeng_yy"] = V22 - 1.0
+            arrays["Eeng_gamma_xy"] = 2.0 * V12
+        else:
+            arrays["Eeng_xx"] = arrays["Eeng_xx_eng"]
+            arrays["Eeng_yy"] = arrays["Eeng_yy_eng"]
+            arrays["Eeng_gamma_xy"] = arrays["Eeng_gamma_xy_eng"]
+        out[idx] = arrays
+    return out
 
 
 def load_ground_truth_images(path: str | Path) -> dict[int, dict[str, float]]:
@@ -69,7 +106,7 @@ def _grid_interpolators(result: RunResult) -> dict[str, RegularGridInterpolator]
     nx = np.unique(result.xs)
     ny = np.unique(result.ys)
     out = {}
-    for name in ("ux", "uy", "exx", "eyy", "gamma_xy"):
+    for name in ("ux", "uy", "Eeng_xx", "Eeng_yy", "Eeng_gamma_xy"):
         field = np.full((ny.size, nx.size), np.nan)
         out[name] = field
     out["_nx"] = nx
@@ -98,15 +135,21 @@ def compare_with_ground_truth(
         # recovered fields on the correlation grid
         ux = _to_grid(f.ux, result.xs, result.ys, ny, nx)
         uy = _to_grid(f.uy, result.xs, result.ys, ny, nx)
-        exx = f.strain["exx"]
-        eyy = f.strain["eyy"]
-        gxy = f.strain["gamma_xy"]
+        Eeng_xx = f.strain["Eeng_xx"]
+        Eeng_yy = f.strain["Eeng_yy"]
+        Eeng_gamma_xy = f.strain["Eeng_gamma_xy"]
         interp = {
             "ux": RegularGridInterpolator((ny, nx), ux, bounds_error=False, fill_value=np.nan),
             "uy": RegularGridInterpolator((ny, nx), uy, bounds_error=False, fill_value=np.nan),
-            "exx": RegularGridInterpolator((ny, nx), exx, bounds_error=False, fill_value=np.nan),
-            "eyy": RegularGridInterpolator((ny, nx), eyy, bounds_error=False, fill_value=np.nan),
-            "gamma_xy": RegularGridInterpolator((ny, nx), gxy, bounds_error=False, fill_value=np.nan),
+            "Eeng_xx": RegularGridInterpolator(
+                (ny, nx), Eeng_xx, bounds_error=False, fill_value=np.nan
+            ),
+            "Eeng_yy": RegularGridInterpolator(
+                (ny, nx), Eeng_yy, bounds_error=False, fill_value=np.nan
+            ),
+            "Eeng_gamma_xy": RegularGridInterpolator(
+                (ny, nx), Eeng_gamma_xy, bounds_error=False, fill_value=np.nan
+            ),
         }
         pts = np.stack([gt["Y"], gt["X"]], axis=1)
         got = {k: interp[k](pts) for k in interp}
@@ -129,19 +172,27 @@ def compare_with_ground_truth(
             row["v_max"] = float(np.max(np.abs(ev)))
             row["bias_u"] = float(np.mean(eu))
             row["bias_v"] = float(np.mean(ev))
-        strain_ok = both & np.isfinite(got["exx"]) & np.isfinite(got["eyy"]) & np.isfinite(got["gamma_xy"])
+        strain_ok = (
+            both
+            & np.isfinite(got["Eeng_xx"])
+            & np.isfinite(got["Eeng_yy"])
+            & np.isfinite(got["Eeng_gamma_xy"])
+        )
         if strain_ok.any():
-            ee = got["exx"][strain_ok] - gt["exx"][strain_ok]
-            ey = got["eyy"][strain_ok] - gt["eyy"][strain_ok]
-            gg = got["gamma_xy"][strain_ok] - gt["gxy"][strain_ok]
-            row["exx_rms"] = float(np.sqrt(np.mean(ee ** 2)))
-            row["exx_max"] = float(np.max(np.abs(ee)))
-            row["eyy_rms"] = float(np.sqrt(np.mean(ey ** 2)))
-            row["eyy_max"] = float(np.max(np.abs(ey)))
-            row["gxy_rms"] = float(np.sqrt(np.mean(gg ** 2)))
-            row["gxy_max"] = float(np.max(np.abs(gg)))
-            rel = np.abs(ee) / np.maximum(np.abs(gt["exx"][strain_ok]), 1e-3)
-            row["exx_rel_rms"] = float(np.sqrt(np.mean(rel ** 2)))
+            ee = got["Eeng_xx"][strain_ok] - gt["Eeng_xx"][strain_ok]
+            ey = got["Eeng_yy"][strain_ok] - gt["Eeng_yy"][strain_ok]
+            gg = (
+                got["Eeng_gamma_xy"][strain_ok]
+                - gt["Eeng_gamma_xy"][strain_ok]
+            )
+            row["Eeng_xx_rms"] = float(np.sqrt(np.mean(ee ** 2)))
+            row["Eeng_xx_max"] = float(np.max(np.abs(ee)))
+            row["Eeng_yy_rms"] = float(np.sqrt(np.mean(ey ** 2)))
+            row["Eeng_yy_max"] = float(np.max(np.abs(ey)))
+            row["Eeng_gamma_xy_rms"] = float(np.sqrt(np.mean(gg ** 2)))
+            row["Eeng_gamma_xy_max"] = float(np.max(np.abs(gg)))
+            rel = np.abs(ee) / np.maximum(np.abs(gt["Eeng_xx"][strain_ok]), 1e-3)
+            row["Eeng_xx_rel_rms"] = float(np.sqrt(np.mean(rel ** 2)))
         row["coverage"] = float(recovered[comparable].mean()) if comparable.any() else 0.0
         row["n_comparable"] = float(comparable.sum())
         rows.append(row)
@@ -152,6 +203,18 @@ def compare_with_ground_truth(
         vals = np.array([r.get(k, np.nan) for r in rows], dtype=float)
         agg[k] = float(np.nanmean(vals)) if np.isfinite(vals).any() else float("nan")
     return {"rows": rows, "aggregate": agg}
+
+
+def _nominal_Eeng_xx_mean(row: dict[str, float]) -> float:
+    """Image-mean nominal ``Eeng_xx`` from a ``ground_truth.csv`` row.
+
+    ``F11..F22`` are present in the provided dataset and describe the affine deformation.
+    If they are absent, fall back to the generator's engineering mean (small-strain limit).
+    """
+    if all(key in row for key in ("F11", "F12", "F21", "F22")):
+        V11, _, _ = left_stretch(row["F11"], row["F12"], row["F21"], row["F22"])
+        return float(V11 - 1.0)
+    return float(row.get("eps_xx_img_mean", row.get("Eeng_xx_mean", np.nan)))
 
 
 def _to_grid(
@@ -197,13 +260,13 @@ def format_dataset_section(
         ("Displacement v max [px]", "v_max"),
         ("Bias u [px]", "bias_u"),
         ("Bias v [px]", "bias_v"),
-        ("Strain exx RMS [-]", "exx_rms"),
-        ("Strain exx max abs [-]", "exx_max"),
-        ("Strain eyy RMS [-]", "eyy_rms"),
-        ("Strain eyy max abs [-]", "eyy_max"),
-        ("Strain gamma_xy RMS [-]", "gxy_rms"),
-        ("Strain gamma_xy max abs [-]", "gxy_max"),
-        ("Relative exx error RMS", "exx_rel_rms"),
+        ("Strain Eeng_xx RMS [-]", "Eeng_xx_rms"),
+        ("Strain Eeng_xx max abs [-]", "Eeng_xx_max"),
+        ("Strain Eeng_yy RMS [-]", "Eeng_yy_rms"),
+        ("Strain Eeng_yy max abs [-]", "Eeng_yy_max"),
+        ("Strain Eeng_gamma_xy RMS [-]", "Eeng_gamma_xy_rms"),
+        ("Strain Eeng_gamma_xy max abs [-]", "Eeng_gamma_xy_max"),
+        ("Relative Eeng_xx error RMS", "Eeng_xx_rel_rms"),
         ("Coverage of comparable points", "coverage"),
     ]:
         v = agg.get(key, float("nan"))
@@ -218,7 +281,10 @@ def format_dataset_section(
             f"strain RMS {_fmt(u.noise_floor_strain_rms)}.")
         add("")
     add("### Per-frame errors\n")
-    add("| Frame | Comparable pts | Coverage | u RMS | u max | v RMS | v max | exx RMS | exx max | eyy RMS | gamma RMS |")
+    add(
+        "| Frame | Comparable pts | Coverage | u RMS | u max | v RMS | v max | "
+        "Eeng_xx RMS | Eeng_xx max | Eeng_yy RMS | Eeng_gamma_xy RMS |"
+    )
     add("|---|---|---|---|---|---|---|---|---|---|---|")
     step = max(1, len(rows) // 25)
     for i in range(0, len(rows), step):
@@ -227,24 +293,27 @@ def format_dataset_section(
             f"| {int(r['frame'])} | {int(r.get('n_comparable', 0))} | "
             f"{100 * r.get('coverage', float('nan')):.1f}% | "
             f"{_fmt(r.get('u_rms'))} | {_fmt(r.get('u_max'))} | {_fmt(r.get('v_rms'))} | "
-            f"{_fmt(r.get('v_max'))} | {_fmt(r.get('exx_rms'))} | {_fmt(r.get('exx_max'))} | "
-            f"{_fmt(r.get('eyy_rms'))} | {_fmt(r.get('gxy_rms'))} |"
+            f"{_fmt(r.get('v_max'))} | {_fmt(r.get('Eeng_xx_rms'))} | "
+            f"{_fmt(r.get('Eeng_xx_max'))} | {_fmt(r.get('Eeng_yy_rms'))} | "
+            f"{_fmt(r.get('Eeng_gamma_xy_rms'))} |"
         )
     add("")
     # compare the recovered mean strain with the generator's own mean (ground_truth.csv)
     if gt_images is not None:
-        mine = np.array([np.nanmean(f.strain["exx"]) for f in result.frames])
-        theirs = np.array([gt_images.get(f.index, {}).get("eps_xx_img_mean", np.nan)
+        mine = np.array([np.nanmean(f.strain["Eeng_xx"]) for f in result.frames])
+        theirs = np.array([_nominal_Eeng_xx_mean(gt_images.get(f.index, {}))
                            for f in result.frames])
         ok = np.isfinite(mine) & np.isfinite(theirs)
         if ok.any():
-            add(f"* Mean `exx` versus the generator's own image-mean `eps_xx_img_mean`: "
-                f"RMS difference {_fmt(np.sqrt(np.mean((mine[ok] - theirs[ok]) ** 2)))} "
-                f"(final frame: recovered {_fmt(mine[ok][-1])}, truth {_fmt(theirs[ok][-1])}).")
+            add(
+                f"* Mean `Eeng_xx` (nominal) versus the generator's own image-mean nominal "
+                f"strain: RMS difference {_fmt(np.sqrt(np.mean((mine[ok] - theirs[ok]) ** 2)))} "
+                f"(final frame: recovered {_fmt(mine[ok][-1])}, truth {_fmt(theirs[ok][-1])})."
+            )
             add("")
     add("### Interpretation\n")
     u_rms = agg.get("u_rms", float("nan"))
-    e_rms = agg.get("exx_rms", float("nan"))
+    e_rms = agg.get("Eeng_xx_rms", float("nan"))
     if np.isfinite(u_rms):
         add(f"* Displacement RMS error {_fmt(u_rms)} px against the analytic field; the analytic "
             f"deformation is affine, for which the affine shape function is exact, so this is the "

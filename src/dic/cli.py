@@ -62,8 +62,9 @@ def build_parser() -> argparse.ArgumentParser:
             "Coordinate and unit conventions: images are indexed [row=y, col=x]; x points right, "
             "y points down; displacements are in pixels unless --scale is given (then in the "
             "chosen --unit); strains are dimensionless. The first image in natural sort order is "
-            "the undeformed reference. Engineering strain is only valid for small strain; use the "
-            "Green-Lagrange fields at large deformation."
+            "the undeformed reference. The primary strain is the nominal (Biot) strain V - I, "
+            "written as Eeng_* fields and matching the measure Abaqus reports as NE; true "
+            "(logarithmic/Hencky) strain T = ln(V) is also written as Etr_* fields."
         ),
     )
     p.add_argument("images", nargs="?", help="Directory of speckle images (read-only input).")

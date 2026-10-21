@@ -48,10 +48,12 @@ def test_pipeline_runs_and_produces_expected_fields(tmp_path):
     assert res.mask.shape == (180, 180)
     f0 = res.frames[0]
     assert np.allclose(f0.ux, 0.0, atol=1e-6)
-    # last frame: the mean exx should be close to 0.18
+    # last frame: the mean nominal Eeng_xx should be close to 0.18 (lambda - 1)
     last = res.frames[-1]
-    assert np.nanmean(last.strain["exx"]) == pytest.approx(0.18, abs=5e-3)
-    assert np.nanmean(last.strain["eyy"]) == pytest.approx(-0.06, abs=5e-3)
+    assert np.nanmean(last.strain["Eeng_xx"]) == pytest.approx(0.18, abs=5e-3)
+    assert np.nanmean(last.strain["Eeng_yy"]) == pytest.approx(-0.06, abs=5e-3)
+    assert np.nanmean(last.strain["Etr_xx"]) == pytest.approx(np.log(1.18), abs=5e-3)
+    assert np.nanmean(last.strain["Etr_yy"]) == pytest.approx(np.log(0.94), abs=5e-3)
 
 
 def test_pipeline_is_reproducible(tmp_path):
@@ -59,7 +61,8 @@ def test_pipeline_is_reproducible(tmp_path):
     a = run_pipeline(d, _fast_cfg())
     b = run_pipeline(d, _fast_cfg())
     assert np.allclose(a.frames[-1].ux, b.frames[-1].ux, equal_nan=True)
-    assert np.allclose(a.frames[-1].strain["exx"], b.frames[-1].strain["exx"], equal_nan=True)
+    assert np.allclose(a.frames[-1].strain["Eeng_xx"], b.frames[-1].strain["Eeng_xx"], equal_nan=True)
+    assert np.allclose(a.frames[-1].strain["Etr_xx"], b.frames[-1].strain["Etr_xx"], equal_nan=True)
 
 
 def test_pipeline_requires_enough_points(tmp_path):
@@ -81,6 +84,10 @@ def test_outputs_are_written(tmp_path):
     assert (out / "summary_report.md").is_file()
     assert (out / "displacement_timeseries.csv").is_file()
     assert (out / "strain_timeseries.csv").is_file()
+    header = (out / "strain_timeseries.csv").read_text().splitlines()[0]
+    assert "Eeng_xx_mean" in header and "Eeng_yy_mean" in header
+    assert "Etr_xx_mean" in header and "Etr_yy_mean" in header
+    assert "exx_mean" not in header and "Txx_mean" not in header
     assert (out / "mask" / "mask_used.png").is_file()
     assert len(list((out / "fields").glob("*.npz"))) == res.n_frames
     params = json.loads((out / "params.json").read_text())
@@ -89,7 +96,15 @@ def test_outputs_are_written(tmp_path):
     assert all(len(f["sha256"]) == 64 for f in params["input"]["files"])
     # a per-frame archive must contain the documented arrays
     npz = np.load(out / "fields" / "frame_0004.npz")
-    for key in ("ux", "uy", "valid", "zncc", "sigma_u", "strain_exx", "strain_Exx"):
+    for key in (
+        "ux",
+        "uy",
+        "valid",
+        "zncc",
+        "sigma_u",
+        "strain_Eeng_xx",
+        "strain_Etr_xx",
+    ):
         assert key in npz
 
 
@@ -159,7 +174,7 @@ def test_incremental_reference_mode_runs(tmp_path):
     assert last.coverage > 0.5
     # accumulated total displacement must still grow with the applied stretch
     assert np.nanmax(np.abs(last.ux)) > 0.1
-    assert np.nanmean(last.strain["exx"]) == pytest.approx(0.18, abs=2e-2)
+    assert np.nanmean(last.strain["Eeng_xx"]) == pytest.approx(0.18, abs=2e-2)
 
 
 def test_demo_generator_produces_usable_dataset(tmp_path):

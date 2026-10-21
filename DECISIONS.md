@@ -104,17 +104,26 @@ convolution, so it is fast. Default window 5×5 grid points.
 using the affine shape-function coefficients directly (available in the NPZ, but noisier and
 harder to control the gauge length), spline fits (more complex, similar behaviour).
 
-**Both engineering and Green–Lagrange strain are always computed and plotted side by side.**
-The prompt requires engineering strain *and* a large-deformation measure, with a warning when
-engineering strain is out of validity. The warning threshold is `--strain-window`-independent and
-defaults to 0.05.
+**Nominal (Biot) strain is the primary measure, with true (logarithmic) strain alongside it.**
+The primary tensor is `ε_N = V − I = (F Fᵀ)^(1/2) − I`, whose principal values are the
+engineering strains `λ_i − 1` and whose principal directions are in the current configuration.
+This is exactly Abaqus output variable `NE` (“nominal strain”), so the fields can be compared
+with an FE model. Unlike the linearised `sym(F) − I`, it vanishes under a finite rigid rotation
+and remains valid at large deformation. The true (logarithmic/Hencky) strain `T = ln(V)` is also
+computed and plotted next to it for comparison; `ln(V)` is the matrix logarithm, so its principal
+values are `ln(λ_i)`.
 
 **Equivalent strain assumes plane-strain incompressibility** (`ε_zz = −(ε_xx+ε_yy)`) — stated
 explicitly because the alternative (plane stress) needs a Poisson ratio the tool does not know.
+It is evaluated on the nominal components; for true strain the same plane-strain relation is
+exact for isochoric deformation (`Etr_zz = −(Etr_xx+Etr_yy)`), so `Etr_eq` uses the same formula on the
+true components.
 
-**Sign convention (documented in the README):** x right, y down; `exx = ∂u/∂x`,
-`eyy = ∂v/∂y`, `γ_xy = ∂u/∂y + ∂v/∂x`. On the provided dataset this reproduces the generator's
-`eps_xx_img`, `eps_yy_img`, `gamma_xy_img` exactly (verified: exx error ~5×10⁻⁴).
+**Sign convention (documented in the README):** x right, y down; `Eeng_xx = V₁₁ − 1`,
+`Eeng_yy = V₂₂ − 1`, `Eeng_xy = V₁₂`, `Eeng_gamma_xy = 2 V₁₂`. At small strain these reduce to
+`∂u/∂x`, `∂v/∂y`, `∂u/∂y + ∂v/∂x`. On the provided uniaxial-stretch dataset the nominal and
+generator engineering
+components coincide exactly (verified: Eeng_xx error ~5×10⁻⁴).
 
 ## 6. Uncertainty
 
@@ -190,8 +199,8 @@ understood implementation is easier to validate and document.
   requirement R10 ("mask shown") holds in both presentations.
 * A quiver overlay on the `|u|` panel shows the motion direction, with arrows starting at the
   material points.
-* **Engineering and Green–Lagrange strains are plotted side by side** so the small-strain caveat
-  is visible rather than buried in a log message.
+* **Nominal and true (logarithmic) strains are plotted side by side** so the two finite-strain
+  measures can be compared directly.
 * **Machine-readable output is the primary product**, figures the secondary: per-frame NPZ with
   the displacement, quality and strain arrays, per-frame time-series CSVs, a grid CSV and a
   `params.json` with versions and input hashes (reproducibility, §5.8).
@@ -216,7 +225,7 @@ understood implementation is easier to validate and document.
 * **The prompt describes `Data01/` as 40 images; the directory actually contains 100**
   (`image0001.png` … `image0100.png`, with 100 masks and 100 ground-truth rows). The tool reads
   whatever is in the directory, so all 100 are processed. The prompt's description of the
-  deformation (uniform uniaxial stretch to ≈40 % engineering strain, additive Gaussian noise
+  deformation (uniform uniaxial stretch to ≈40 % nominal strain, additive Gaussian noise
   σ ≈ 2 grey levels, no rotation, no translation, outer field of view leaving the frame late in
   the sequence) matches the actual data.
 * **Order-5 interpolation** is offered but is not the default: its interior accuracy is better

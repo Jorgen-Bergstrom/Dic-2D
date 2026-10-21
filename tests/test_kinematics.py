@@ -9,8 +9,10 @@ from dic.kinematics import (
     affine_from_global,
     compose_inverse_update,
     extrapolate_params,
+    left_stretch,
     matrix_to_params,
     params_to_matrix,
+    true_strain,
     warp_points,
 )
 
@@ -65,3 +67,43 @@ def test_extrapolate_params_linear():
     out = extrapolate_params(p1, p2)
     assert out[0, 0] == pytest.approx(3.0)
     assert np.allclose(extrapolate_params(None, p2), p2)
+
+
+def test_left_stretch_matches_eigen_decomposition():
+    F = np.array([[1.2, 0.3], [-0.1, 0.9]])
+    V11, V12, V22 = left_stretch(F[0, 0], F[0, 1], F[1, 0], F[1, 1])
+    b = F @ F.T
+    eigvals, eigvecs = np.linalg.eigh(b)
+    V = eigvecs @ np.diag(np.sqrt(eigvals)) @ eigvecs.T
+    assert V11 == pytest.approx(V[0, 0])
+    assert V12 == pytest.approx(V[0, 1])
+    assert V22 == pytest.approx(V[1, 1])
+
+
+def test_left_stretch_of_rotation_is_identity():
+    theta = np.radians(30.0)
+    c, s = np.cos(theta), np.sin(theta)
+    V11, V12, V22 = left_stretch(c, -s, s, c)
+    assert V11 == pytest.approx(1.0)
+    assert V12 == pytest.approx(0.0, abs=1e-15)
+    assert V22 == pytest.approx(1.0)
+
+
+def test_true_strain_matches_matrix_logarithm():
+    F = np.array([[1.2, 0.3], [-0.1, 0.9]])
+    T11, T12, T22 = true_strain(F[0, 0], F[0, 1], F[1, 0], F[1, 1])
+    b = F @ F.T
+    eigvals, eigvecs = np.linalg.eigh(b)
+    T = eigvecs @ np.diag(0.5 * np.log(eigvals)) @ eigvecs.T
+    assert T11 == pytest.approx(T[0, 0])
+    assert T12 == pytest.approx(T[0, 1])
+    assert T22 == pytest.approx(T[1, 1])
+
+
+def test_true_strain_of_rotation_is_zero():
+    theta = np.radians(30.0)
+    c, s = np.cos(theta), np.sin(theta)
+    T11, T12, T22 = true_strain(c, -s, s, c)
+    assert T11 == pytest.approx(0.0, abs=1e-15)
+    assert T12 == pytest.approx(0.0, abs=1e-15)
+    assert T22 == pytest.approx(0.0, abs=1e-15)

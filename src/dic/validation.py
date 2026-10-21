@@ -6,7 +6,7 @@ number in ``validation_report.md`` comes from an actual run of this code.
 
 Cases covered (as required): zero motion; sub-pixel and multi-pixel rigid translation; rigid
 rotation of 30 degrees (incremental and single-step); uniform stretch >= 20%; affine shear; a
-non-uniform displacement field checked against its analytic gradients; a linear illumination
+non-uniform displacement field checked against its analytic nominal strain; a linear illumination
 change; a partially masked image with an empty background; and additive Gaussian noise up to ~2%
 of the dynamic range.
 """
@@ -22,6 +22,7 @@ import numpy as np
 from scipy import ndimage
 
 from .config import RunConfig
+from .kinematics import left_stretch
 from .pipeline import RunResult, run_pipeline
 from .synth import (
     AffineDeformation,
@@ -184,7 +185,7 @@ def build_cases(quick: bool = False) -> list[Case]:
             title="Uniform stretch to 20% (and -5% transverse)",
             description="11 frames ramping a uniform affine stretch from 0 to ex=+0.20, "
             "ey=-0.05, noise 2 grey.",
-            criterion="u RMS <= 0.05 px, |exx error| <= 2e-3, |eyy error| <= 2e-3",
+            criterion="u RMS <= 0.05 px, |Eeng_xx error| <= 2e-3, |Eeng_yy error| <= 2e-3",
             images=_seq(pat, sts, noise=2.0),
             deformations=sts,
             cfg=cfg,
@@ -198,9 +199,9 @@ def build_cases(quick: bool = False) -> list[Case]:
         Case(
             key="shear_affine",
             title="Affine simple shear (gamma = 0.10)",
-            description="Reference plus one frame with engineering shear gamma_xy = 0.10, "
+            description="Reference plus one frame with simple-shear parameter gamma = 0.10, "
             "noise 2 grey.",
-            criterion="u RMS <= 0.05 px, |gamma_xy error| <= 2e-3",
+            criterion="u RMS <= 0.05 px, |Eeng_gamma_xy error| <= 2e-3",
             images=_seq(pat, [ident, d7], noise=2.0),
             deformations=[ident, d7],
             cfg=cfg,
@@ -218,7 +219,7 @@ def build_cases(quick: bool = False) -> list[Case]:
             key="nonuniform",
             title="Non-uniform displacement field",
             description="Smooth sinusoidal + linear displacement field; checked against its "
-            "analytic gradients averaged over the virtual strain gauge.",
+            "analytic nominal strain from gradients averaged over the virtual strain gauge.",
             criterion="u RMS <= 0.05 px and strain RMS <= 2e-3",
             images=_seq(pat, [ident, d8], noise=2.0),
             deformations=[ident, d8],
@@ -295,7 +296,7 @@ def _grid(values, xs, ys, ny, nx):
 
 
 def _expected_strain(deformation, xs, ys, ny, nx, window):
-    """Analytic displacement gradients averaged over the virtual strain gauge."""
+    """Analytic nominal strain from gradients averaged over the virtual strain gauge."""
     gt = ground_truth_fields(deformation, xs, ys)
     out = {}
     kern = np.ones((window, window)) / (window * window)
@@ -303,6 +304,12 @@ def _expected_strain(deformation, xs, ys, ny, nx, window):
         g = _grid(gt[key], xs, ys, ny, nx)
         g = ndimage.correlate(np.nan_to_num(g, nan=np.nanmean(g)), kern, mode="nearest")
         out[key] = g
+    V11, V12, V22 = left_stretch(
+        1.0 + out["ux_x"], out["ux_y"], out["uy_x"], 1.0 + out["uy_y"]
+    )
+    out["Eeng_xx"] = V11 - 1.0
+    out["Eeng_yy"] = V22 - 1.0
+    out["Eeng_gamma_xy"] = 2.0 * V12
     return out
 
 
@@ -312,7 +319,7 @@ def evaluate_case(case: Case) -> dict[str, float]:
     assert result is not None
     window = result.cfg.strain.window
     u_err, v_err = [], []
-    exx_err, eyy_err, gam_err = [], [], []
+    Eeng_xx_err, Eeng_yy_err, gam_err = [], [], []
     covs = []
     for f, deformation in zip(result.frames, case.deformations, strict=False):
         m = f.valid
@@ -324,21 +331,21 @@ def evaluate_case(case: Case) -> dict[str, float]:
         v_err.append(f.uy[m] - gt["uy"][m])
         exp = _expected_strain(deformation, result.xs, result.ys, result.ny, result.nx, window)
         sv = f.strain.valid
-        exx = f.strain["exx"]
-        eyy = f.strain["eyy"]
-        gam = f.strain["gamma_xy"]
-        ok = sv & np.isfinite(exx)
+        Eeng_xx = f.strain["Eeng_xx"]
+        Eeng_yy = f.strain["Eeng_yy"]
+        gam = f.strain["Eeng_gamma_xy"]
+        ok = sv & np.isfinite(Eeng_xx)
         if ok.any():
-            exx_err.append((exx - exp["ux_x"])[ok])
-            eyy_err.append((eyy - exp["uy_y"])[ok])
-            gam_err.append((gam - (exp["ux_y"] + exp["uy_x"]))[ok])
+            Eeng_xx_err.append((Eeng_xx - exp["Eeng_xx"])[ok])
+            Eeng_yy_err.append((Eeng_yy - exp["Eeng_yy"])[ok])
+            gam_err.append((gam - exp["Eeng_gamma_xy"])[ok])
 
     u_err = np.concatenate(u_err) if u_err else np.array([np.nan])
     v_err = np.concatenate(v_err) if v_err else np.array([np.nan])
-    exx_err = np.concatenate(exx_err) if exx_err else np.array([np.nan])
-    eyy_err = np.concatenate(eyy_err) if eyy_err else np.array([np.nan])
+    Eeng_xx_err = np.concatenate(Eeng_xx_err) if Eeng_xx_err else np.array([np.nan])
+    Eeng_yy_err = np.concatenate(Eeng_yy_err) if Eeng_yy_err else np.array([np.nan])
     gam_err = np.concatenate(gam_err) if gam_err else np.array([np.nan])
-    strain_all = np.concatenate([exx_err, eyy_err, gam_err])
+    strain_all = np.concatenate([Eeng_xx_err, Eeng_yy_err, gam_err])
     metrics = {
         "u_rms": float(np.sqrt(np.nanmean(u_err ** 2))),
         "u_max": float(np.nanmax(np.abs(u_err))),
@@ -346,9 +353,9 @@ def evaluate_case(case: Case) -> dict[str, float]:
         "v_rms": float(np.sqrt(np.nanmean(v_err ** 2))),
         "v_max": float(np.nanmax(np.abs(v_err))),
         "v_bias": float(np.nanmean(v_err)),
-        "exx_rms": float(np.sqrt(np.nanmean(exx_err ** 2))),
-        "eyy_rms": float(np.sqrt(np.nanmean(eyy_err ** 2))),
-        "gamma_rms": float(np.sqrt(np.nanmean(gam_err ** 2))),
+        "Eeng_xx_rms": float(np.sqrt(np.nanmean(Eeng_xx_err ** 2))),
+        "Eeng_yy_rms": float(np.sqrt(np.nanmean(Eeng_yy_err ** 2))),
+        "Eeng_gamma_xy_rms": float(np.sqrt(np.nanmean(gam_err ** 2))),
         "strain_rms": float(np.sqrt(np.nanmean(strain_all ** 2))),
         "strain_max": float(np.nanmax(np.abs(strain_all))),
         "coverage": float(np.mean(covs)) if covs else 0.0,
@@ -377,12 +384,12 @@ def _check(case: Case, m: dict[str, float]) -> tuple[bool, str]:
     if k == "rotation_30_single_step":
         return (m["u_rms"] <= 0.05, f"u_rms={m['u_rms']:.4f} (<=0.05)")
     if k == "stretch_20":
-        return (m["u_rms"] <= 0.05 and m["exx_rms"] <= 2e-3 and m["eyy_rms"] <= 2e-3,
-                f"u_rms={m['u_rms']:.4f} (<=0.05), exx_rms={m['exx_rms']:.3g}, "
-                f"eyy_rms={m['eyy_rms']:.3g} (<=2e-3)")
+        return (m["u_rms"] <= 0.05 and m["Eeng_xx_rms"] <= 2e-3 and m["Eeng_yy_rms"] <= 2e-3,
+                f"u_rms={m['u_rms']:.4f} (<=0.05), Eeng_xx_rms={m['Eeng_xx_rms']:.3g}, "
+                f"Eeng_yy_rms={m['Eeng_yy_rms']:.3g} (<=2e-3)")
     if k == "shear_affine":
-        return (m["u_rms"] <= 0.05 and m["gamma_rms"] <= 2e-3,
-                f"u_rms={m['u_rms']:.4f} (<=0.05), gamma_rms={m['gamma_rms']:.3g} (<=2e-3)")
+        return (m["u_rms"] <= 0.05 and m["Eeng_gamma_xy_rms"] <= 2e-3,
+                f"u_rms={m['u_rms']:.4f} (<=0.05), Eeng_gamma_xy_rms={m['Eeng_gamma_xy_rms']:.3g} (<=2e-3)")
     if k == "nonuniform":
         return (m["u_rms"] <= 0.05 and m["strain_rms"] <= 2e-3,
                 f"u_rms={m['u_rms']:.4f} (<=0.05), strain_rms={m['strain_rms']:.3g} (<=2e-3)")
@@ -518,9 +525,9 @@ def _run_dataset_validation(
         agg["noise_floor_strain"] = result.uncertainty.noise_floor_strain_rms
         agg["image_noise"] = result.uncertainty.image_noise_sigma
     logger.info(
-        "Provided dataset: u RMS %.4f px, exx RMS %.3g, coverage %.3f, wall %.1fs",
+        "Provided dataset: u RMS %.4f px, Eeng_xx RMS %.3g, coverage %.3f, wall %.1fs",
         agg.get("u_rms", float("nan")),
-        agg.get("exx_rms", float("nan")),
+        agg.get("Eeng_xx_rms", float("nan")),
         agg.get("coverage", float("nan")),
         wall,
     )
@@ -565,14 +572,14 @@ def _targets_table(cases: list[Case], dataset_metrics: dict | None) -> str:
     add("Uniform stretch displacement RMS", "<= 0.05 px",
         f"{m.get('u_rms', float('nan')):.4f} px", m.get("u_rms", 9) <= 0.05)
     add("Uniform stretch strain error", "<= 2e-3",
-        f"exx {m.get('exx_rms', float('nan')):.3g}, eyy {m.get('eyy_rms', float('nan')):.3g}",
-        max(m.get("exx_rms", 9), m.get("eyy_rms", 9)) <= 2e-3)
+        f"Eeng_xx {m.get('Eeng_xx_rms', float('nan')):.3g}, Eeng_yy {m.get('Eeng_yy_rms', float('nan')):.3g}",
+        max(m.get("Eeng_xx_rms", 9), m.get("Eeng_yy_rms", 9)) <= 2e-3)
     m = by_key.get("nonuniform", {})
     add("Non-uniform field strain error", "<= 2e-3",
         f"{m.get('strain_rms', float('nan')):.3g}", m.get("strain_rms", 9) <= 2e-3)
     m = by_key.get("shear_affine", {})
     add("Affine shear strain error", "<= 2e-3",
-        f"{m.get('gamma_rms', float('nan')):.3g}", m.get("gamma_rms", 9) <= 2e-3)
+        f"{m.get('Eeng_gamma_xy_rms', float('nan')):.3g}", m.get("Eeng_gamma_xy_rms", 9) <= 2e-3)
     if dataset_metrics:
         add("Coverage on the provided dataset (comparable points)", ">= 90%",
             f"{100 * dataset_metrics.get('coverage', 0):.1f}%",
@@ -649,8 +656,9 @@ def write_validation_report(
     add("Each case is rendered analytically (exact ground truth) at 512x512 px with a "
         "50%-coverage speckle pattern (speckle radius 3-6 px) unless stated otherwise. "
         "Errors are RMS over all valid points and frames, compared with the analytic fields on "
-        "the correlation grid; strain is compared with the analytic gradients averaged over the "
-        "virtual strain gauge (the exact expectation of the plane fit). Mode: "
+        "the correlation grid; strain is compared with the nominal strain derived from the "
+        "analytic gradients averaged over the virtual strain gauge (the exact expectation of the "
+        "plane fit). Mode: "
         f"{'quick' if quick else 'full'}.\n")
     add("### Summary\n")
     add("| Case | Criterion | u RMS [px] | u max [px] | strain RMS | coverage | wall [s] | Result |")
@@ -676,9 +684,9 @@ def write_validation_report(
         add(f"* **Measured:** u RMS {m.get('u_rms', float('nan')):.4f} px, "
             f"u max {m.get('u_max', float('nan')):.4f} px, bias {m.get('u_bias', float('nan')):.4f} px; "
             f"v RMS {m.get('v_rms', float('nan')):.4f} px, bias {m.get('v_bias', float('nan')):.4f} px")
-        add(f"* **Strain:** exx RMS {m.get('exx_rms', float('nan')):.3g}, "
-            f"eyy RMS {m.get('eyy_rms', float('nan')):.3g}, "
-            f"gamma RMS {m.get('gamma_rms', float('nan')):.3g}, "
+        add(f"* **Strain:** Eeng_xx RMS {m.get('Eeng_xx_rms', float('nan')):.3g}, "
+            f"Eeng_yy RMS {m.get('Eeng_yy_rms', float('nan')):.3g}, "
+            f"Eeng_gamma_xy RMS {m.get('Eeng_gamma_xy_rms', float('nan')):.3g}, "
             f"overall strain RMS {m.get('strain_rms', float('nan')):.3g}")
         add(f"* **Coverage:** {100 * m.get('coverage', 0):.1f}% of grid points valid")
         add(f"* **Speed:** correlation {m.get('correlation_s', float('nan')):.2f} s for "
@@ -689,8 +697,9 @@ def write_validation_report(
     add("* The uniform-stretch, shear, translation and rotation cases have *exact* affine ground "
         "truth, for which the affine subset shape function is exact; the residual error is "
         "dominated by interpolation bias and image noise.")
-    add("* The non-uniform case is compared against the analytic gradients **averaged over the "
-        "strain window**, because a plane fit reports a windowed average by construction.")
+    add("* The non-uniform case is compared against the analytic nominal strain computed from "
+        "gradients **averaged over the strain window**, because a plane fit reports a windowed "
+        "average by construction.")
     add("* Strain error on the sharp-edged synthetic speckle is dominated by interpolation "
         "(aliasing) bias of the non-band-limited pattern, which is why the images are "
         "Gaussian-prefiltered before correlation (sigma = "

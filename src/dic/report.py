@@ -61,7 +61,7 @@ def build_summary(result: RunResult) -> str:
 
     # ---- coverage & quality ---------------------------------------------------------
     add("## Per-frame coverage and quality\n")
-    add("| Frame | Image | t | Coverage | ZNCC med | mean sigma_u | mean sigma_v | mean eps_xx | max |eps_xx| |")
+    add("| Frame | Image | t | Coverage | ZNCC med | mean sigma_u | mean sigma_v | mean Eeng_xx | max |Eeng_xx| |")
     add("|---|---|---|---|---|---|---|---|---|")
     step = max(1, result.n_frames // 40)
     shown = list(range(0, result.n_frames, step))
@@ -69,12 +69,12 @@ def build_summary(result: RunResult) -> str:
         shown.append(result.n_frames - 1)
     for i in shown:
         f = result.frames[i]
-        exx = f.strain["exx"]
-        max_exx = np.nanmax(np.abs(exx)) if np.isfinite(exx).any() else np.nan
+        Eeng_xx = f.strain["Eeng_xx"]
+        max_Eeng_xx = np.nanmax(np.abs(Eeng_xx)) if np.isfinite(Eeng_xx).any() else np.nan
         add(
             f"| {f.index + 1} | {f.name} | {f.t_load:.3f} | {100 * f.coverage:.1f}% | "
             f"{_fmt(np.nanmedian(f.zncc), 5)} | {_fmt(f.mean_sigma_u)} | {_fmt(f.mean_sigma_v)} | "
-            f"{_fmt(np.nanmean(exx))} | {_fmt(max_exx)} |"
+            f"{_fmt(np.nanmean(Eeng_xx))} | {_fmt(max_Eeng_xx)} |"
         )
     add("")
     covs = np.array([f.coverage for f in result.frames])
@@ -168,9 +168,9 @@ def _interpret(cfg, unc) -> str:
     )
     lines.append(
         "* **2D-DIC caveats:** out-of-plane motion, lens distortion, a non-parallel camera axis "
-        "and a non-planar specimen all produce bias that no amount of tuning removes.  "
-        "Engineering strain is only valid for small strain - read the Green-Lagrange fields at "
-        "large deformation."
+        "and a non-planar specimen all produce bias that no amount of tuning removes.  The "
+        "reported nominal strain (V - I, Abaqus NE) is valid at finite strain; true "
+        "(logarithmic/Hencky) strain T = ln(V) is also written for comparison."
     )
     return "\n".join(lines)
 

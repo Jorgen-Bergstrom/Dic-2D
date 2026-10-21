@@ -24,7 +24,7 @@ the mathematics is in [`docs/ALGORITHM.md`](docs/ALGORITHM.md); every design cho
 ## Gallery
 
 Produced by `python -m dic Data01 runs/Data01_full` on the provided dataset (last frame, 40 %
-engineering strain). The field is drawn on the **current frame** at the material positions
+nominal strain). The field is drawn on the **current frame** at the material positions
 `X + u`, so the specimen visibly deforms and the field follows the material
 (`--overlay reference` gives the fixed-reference view instead).
 
@@ -32,8 +32,8 @@ engineering strain). The field is drawn on the **current frame** at the material
 
 ![displacement](docs/images/displacement_frame100.png)
 
-**Strain** — engineering (top row) next to Green–Lagrange (bottom row), so the small-strain
-caveat is visible rather than buried in a log message:
+**Strain** — nominal (Biot) strain (top row) next to true (logarithmic/Hencky) strain
+(bottom row), so the two finite-strain measures can be compared directly:
 
 ![strain](docs/images/strain_frame100.png)
 
@@ -99,7 +99,7 @@ extras/curves.png               mean/max displacement and strain vs time
 extras/profiles.png             line profiles through the last frame
 extras/uncertainty.png          per-point uncertainty and ZNCC maps
 animations/displacement.gif     growing displacement field
-animations/exx.gif              growing strain field
+animations/Eeng_xx.gif          growing strain field
 ```
 
 ### Run the demo (synthetic data with known ground truth)
@@ -115,11 +115,11 @@ fields, summary report). The presets are
 
 | Preset | What it exercises | Expected result |
 |---|---|---|
-| `rotation` | rigid rotation 0→30° **and** translation 0→(25,−15) px, at 1°/frame | coverage falls as the corners leave the frame; engineering strain ≈ −0.13, Green–Lagrange ≈ 0 |
+| `rotation` | rigid rotation 0→30° **and** translation 0→(25,−15) px, at 1°/frame | coverage falls as the corners leave the frame; nominal strain ≈ 0, true strain ≈ 0 |
 | `masked` | a speckled patch on a flat background | the auto-mask detects the patch (≈40 % of the frame) and correlates only there |
 | `illumination` | translation with gain 1→1.25 and a linear illumination ramp | ZNSSD absorbs the change; u RMS stays < 0.05 px |
 | `noisy` | 15 % stretch at σ = 5.1 grey levels (2 % of range) | higher noise floor, still accurate |
-| `nonuniform` | smooth sinusoidal + linear field | strain gradients recovered; Green–Lagrange differs from engineering |
+| `nonuniform` | smooth sinusoidal + linear field | strain gradients recovered; true strain differs from nominal |
 
 To generate datasets without running the analysis:
 
@@ -242,29 +242,45 @@ populated. Run `python -m dic --help` for the authoritative list; the table belo
   `--unit` if `--scale` is given. `u_x` is horizontal, `u_y` is vertical (positive = downwards in
   the image). Incremental (frame-to-frame) fields are available through
   `--reference incremental`.
-* **Strain** is dimensionless and uses the image frame:
-  `exx = ∂u_x/∂x`, `eyy = ∂u_y/∂y`, `gamma_xy = ∂u_x/∂y + ∂u_y/∂x`, `exy = gamma_xy/2`.
-  Positive `exx`/`eyy` means elongation along x/y.
+* **Strain** is dimensionless and uses the image frame. The primary measure is the nominal
+  (Biot/engineering) strain `ε_N = V − I`, where `F = I + ∇u` and `V = √(F Fᵀ)` is the left
+  stretch tensor. It is the same measure Abaqus reports as **NE**. Its components are
+  `Eeng_xx = V₁₁ − 1`, `Eeng_yy = V₂₂ − 1`, `Eeng_xy = V₁₂`,
+  `Eeng_gamma_xy = 2 V₁₂`. The principal values are `λ_i − 1`, the engineering strains, and the
+  principal directions are in the current configuration. Positive `Eeng_xx`/`Eeng_yy` means
+  elongation along x/y.
+* **True strain** `T = ln(V)` is reported alongside the nominal strain as `Etr_xx`, `Etr_yy`,
+  `Etr_xy`, `Etr_gamma_xy`, with principal values `Etr_1`, `Etr_2` and equivalent strain
+  `Etr_eq`. `ln(V)` is the matrix logarithm of the left stretch tensor, not an element-wise
+  logarithm. Because `V−I` and `ln(V)` share eigenvectors, the reported principal directions
+  (`theta_p_deg`) apply to both.
 * **Rotation** is reported as a small-angle value (`omega`, rad) and as a finite angle from the
   polar decomposition (`theta_deg`, degrees).
-* **Equivalent strain** (`eps_eq`) is a von Mises measure assuming plane-strain
-  incompressibility, `eps_zz = −(eps_xx + eps_yy)`.
+* **Equivalent strain** (`Eeng_eq`) is a von Mises measure of the nominal components, using the
+  small-strain plane-strain relation `Eeng_zz = −(Eeng_xx + Eeng_yy)`. `Etr_eq` applies the same
+  formula to the true components, for which plane-strain isochoric incompressibility is exact.
 * **Colour images** are converted to grayscale with the Rec. 601 luma weights
   (0.299 R + 0.587 G + 0.114 B); the alpha channel is dropped. Grey levels keep their native
   scale, so reported noise is in grey levels.
 * **Invalid points are `NaN`** everywhere — never interpolated, never fabricated. The valid-point
   fraction is reported per frame.
 
-### ⚠️ Engineering strain versus large strain
+### ✅ Nominal and true strain at finite deformation
 
-The engineering (small-strain) definition is only valid for small strain: for a pure stretch `λ`
-the engineering strain is `λ − 1`, but the true (logarithmic) strain is `ln λ`; for a pure
-rotation of angle θ the engineering tensor is `(cos θ − 1)·I ≠ 0` while the true strain is zero.
-The tool therefore computes **both** the engineering components (`exx`, `eyy`, `gamma_xy`) and the
-**Green–Lagrange** components (`Exx`, `Eyy`, `Exy`), plots them side by side, and **warns** when
-`max|engineering strain|` exceeds 0.05. At large deformation, read the Green–Lagrange row.
-On `Data01/`, which reaches 40 % engineering strain, the Green–Lagrange `Exx` at the last frame is
-0.48 while the engineering `exx` is 0.40 — a 20 % difference.
+The old small-strain tensor `sym(F) − I` is **not** used as the primary strain measure: it does not
+vanish under a finite rigid rotation. The tool reports the **nominal (Biot) strain**
+`ε_N = V − I = √(F Fᵀ) − I`, whose principal values are the engineering strains `λ_i − 1` and
+whose principal directions are in the current configuration. This is exactly Abaqus output
+variable `NE` (“nominal strain”), so the components can be compared directly with an FE model.
+
+For a pure stretch `λ`, `Eeng_xx = λ − 1`; for a pure rotation, `ε_N = 0`.
+
+The **true (logarithmic/Hencky) strain** `T = ln(V)` is also written and plotted for comparison.
+Here `ln(V)` is the matrix logarithm of the left stretch tensor, so its principal values are
+`ln(λ_i)`; it is not an element-wise logarithm. The components are `Etr_xx`, `Etr_yy`, `Etr_xy`,
+`Etr_gamma_xy`, with principal values `Etr_1`, `Etr_2` and equivalent strain `Etr_eq`. On
+`Data01/`, which reaches 40 % nominal strain, the true `Etr_xx` at the last frame is
+`ln(1.4) ≈ 0.3365` while the nominal `Eeng_xx` is 0.40.
 
 ---
 
@@ -291,14 +307,14 @@ truth, on both the provided dataset and the synthetic suite.
 The full numbers, produced by the code itself, are in
 [`validation_report.md`](validation_report.md). Summary (default settings):
 
-**Provided dataset `Data01/` (100 frames, 1024², uniform stretch to 40 % engineering strain):**
+**Provided dataset `Data01/` (100 frames, 1024², uniform stretch to 40 % nominal strain):**
 
 | Quantity | Measured |
 |---|---|
 | Displacement RMS error (u / v) | **0.0066 / 0.0054 px** |
 | Displacement max error | 0.020 / 0.017 px |
-| Strain `exx` RMS error | **1.1×10⁻⁴** (0.011 %) |
-| Strain `gamma_xy` RMS error | 1.3×10⁻⁴ |
+| Strain `Eeng_xx` RMS error | **1.1×10⁻⁴** (0.011 %) |
+| Strain `Eeng_gamma_xy` RMS error | 1.3×10⁻⁴ |
 | Coverage of comparable points | 93.8 % |
 | Throughput | **1.8 s/frame** (3 844 points) |
 
@@ -366,7 +382,8 @@ cfg.correlation.subset_size = 41
 cfg.strain.window = 5
 
 result = run_pipeline("Data01", cfg)
-print(result.frames[-1].strain["Exx"].mean())   # mean Green-Lagrange strain, last frame
+print(result.frames[-1].strain["Eeng_xx"].mean())   # mean nominal (Biot) strain, last frame
+print(result.frames[-1].strain["Etr_xx"].mean())   # mean true (ln V) strain, last frame
 write_all(result, "out")
 write_summary(result, "out")
 ```

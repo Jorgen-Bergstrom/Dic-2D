@@ -16,6 +16,8 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from .kinematics import left_stretch, true_strain
+
 
 # --------------------------------------------------------------------------------------
 # Deformations (reference -> deformed), with analytic Jacobians
@@ -313,8 +315,9 @@ def ground_truth_fields(
     -------
     dict with keys
         ``ux, uy`` (px), ``ux_x, ux_y, uy_x, uy_y`` (dimensionless gradients),
-        ``exx, eyy, gamma_xy`` (engineering, image frame),
-        ``Exx, Eyy, Exy`` (Green-Lagrange).
+        ``Eeng_xx, Eeng_yy, Eeng_xy, Eeng_gamma_xy`` (nominal/Biot strain ``V - I``,
+        image frame), ``F11, F12, F21, F22`` (deformation gradient),
+        ``Etr_xx, Etr_yy, Etr_xy`` (true/logarithmic strain ``ln(V)``).
     """
     pts = np.stack([xs, ys], axis=1)
     moved = deformation(pts)
@@ -325,10 +328,11 @@ def ground_truth_fields(
     ux_y = J[:, 0, 1]
     uy_x = J[:, 1, 0]
     uy_y = J[:, 1, 1] - 1.0
-    F = J  # deformation gradient (image frame)
-    Exx = 0.5 * (F[:, 0, 0] ** 2 + F[:, 1, 0] ** 2 - 1.0)
-    Eyy = 0.5 * (F[:, 0, 1] ** 2 + F[:, 1, 1] ** 2 - 1.0)
-    Exy = 0.5 * (F[:, 0, 0] * F[:, 0, 1] + F[:, 1, 0] * F[:, 1, 1])
+    F11, F12, F21, F22 = J[:, 0, 0], J[:, 0, 1], J[:, 1, 0], J[:, 1, 1]
+    # Nominal (Biot/engineering) strain: V - I, principal values lambda_i - 1.
+    V11, V12, V22 = left_stretch(F11, F12, F21, F22)
+    # True (logarithmic/Hencky) strain: Etr = ln(V).
+    Etr_xx, Etr_xy, Etr_yy = true_strain(F11, F12, F21, F22)
     return {
         "ux": u[:, 0],
         "uy": u[:, 1],
@@ -336,10 +340,15 @@ def ground_truth_fields(
         "ux_y": ux_y,
         "uy_x": uy_x,
         "uy_y": uy_y,
-        "exx": ux_x,
-        "eyy": uy_y,
-        "gamma_xy": ux_y + uy_x,
-        "Exx": Exx,
-        "Eyy": Eyy,
-        "Exy": Exy,
+        "Eeng_xx": V11 - 1.0,
+        "Eeng_yy": V22 - 1.0,
+        "Eeng_xy": V12,
+        "Eeng_gamma_xy": 2.0 * V12,
+        "F11": F11,
+        "F12": F12,
+        "F21": F21,
+        "F22": F22,
+        "Etr_xx": Etr_xx,
+        "Etr_yy": Etr_yy,
+        "Etr_xy": Etr_xy,
     }

@@ -27,6 +27,73 @@ import numpy as np
 #: Number of affine parameters.
 N_PARAMS = 6
 
+_EPS = 1e-12
+
+
+def left_stretch(
+    F11: np.ndarray | float,
+    F12: np.ndarray | float,
+    F21: np.ndarray | float,
+    F22: np.ndarray | float,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Left stretch tensor ``V = (F F^T)^(1/2)`` of a 2x2 deformation gradient.
+
+    The components of ``F`` are ordered as
+
+    ``F = [[F11, F12], [F21, F22]] = [[dx/dX, dx/dY], [dy/dX, dy/dY]]``.
+
+    Returns the three independent components ``(V11, V12, V22)`` of the symmetric
+    left stretch tensor.  The closed form for the square root of a symmetric
+    positive-definite 2x2 matrix is used, so the function is vectorised over
+    array-valued components.
+    """
+    b11 = F11 * F11 + F12 * F12
+    b12 = F11 * F21 + F12 * F22
+    b22 = F21 * F21 + F22 * F22
+    det = b11 * b22 - b12 * b12
+    sqdet = np.sqrt(np.clip(det, 0.0, None))
+    denom = np.sqrt(np.clip(b11 + b22 + 2.0 * sqdet, _EPS, None))
+    V11 = (b11 + sqdet) / denom
+    V12 = b12 / denom
+    V22 = (b22 + sqdet) / denom
+    return V11, V12, V22
+
+
+def true_strain(
+    F11: np.ndarray | float,
+    F12: np.ndarray | float,
+    F21: np.ndarray | float,
+    F22: np.ndarray | float,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """True (logarithmic/Hencky) strain ``T = ln(V)`` for a 2x2 deformation gradient.
+
+    ``V`` is the left stretch tensor from :func:`left_stretch`.  The matrix
+    logarithm is evaluated in closed form from the symmetric eigen-decomposition
+    of ``V``; it is **not** the element-wise logarithm.  Returns the three
+    independent components ``(T11, T12, T22)``.  Principal values are
+    ``ln(lambda_i)`` and principal directions are those of ``V`` in the current
+    configuration.
+    """
+    V11, V12, V22 = left_stretch(F11, F12, F21, F22)
+
+    # V = mean*(I + A), with A symmetric and traceless.  The eigenvalues of A are
+    # +/- delta, so ln(V) = ln(mean)*I + ln(I + A).  For a traceless 2x2 matrix,
+    # ln(I + A) = 0.5*ln(1-delta^2)*I + (atanh(delta)/delta)*A.
+    mean = 0.5 * (V11 + V22)
+    rad = np.sqrt(0.25 * (V11 - V22) ** 2 + V12 * V12)
+    det = V11 * V22 - V12 * V12
+    with np.errstate(divide="ignore", invalid="ignore"):
+        delta = rad / mean
+        coeff = np.where(delta < 1e-8, 1.0, np.arctanh(delta) / delta)
+        base = 0.5 * np.log(det)
+        A11 = (V11 - mean) / mean
+        A12 = V12 / mean
+        A22 = (V22 - mean) / mean
+        T11 = base + coeff * A11
+        T12 = coeff * A12
+        T22 = base + coeff * A22
+    return T11, T12, T22
+
 
 def params_to_matrix(
     p: np.ndarray,

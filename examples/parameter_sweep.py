@@ -66,13 +66,17 @@ def measure(subset: int, step: int, window: int, noise: float, seed: int = 0) ->
     sr = compute_strains(ux, uy, valid, float(np.median(np.diff(np.unique(xs)))),
                          float(np.median(np.diff(np.unique(ys)))), StrainConfig(window=window),
                          subset_size=subset)
-    exx = sr["exx"]
-    err = exx - 0.05
-    exx_rms = float(np.sqrt(np.nanmean(err[np.isfinite(err)] ** 2))) if np.isfinite(err).any() else float("nan")
+    Eeng_xx = sr["Eeng_xx"]
+    err = Eeng_xx - 0.05
+    Eeng_xx_rms = (
+        float(np.sqrt(np.nanmean(err[np.isfinite(err)] ** 2)))
+        if np.isfinite(err).any()
+        else float("nan")
+    )
     return {
         "u_rms": u_rms, "v_rms": v_rms, "strain_noise": s_rms,
         "u_rms_stretch": float(np.sqrt(np.mean((res.u[m] - gt["ux"][m]) ** 2))) if m.any() else np.nan,
-        "exx_rms": exx_rms,
+        "Eeng_xx_rms": Eeng_xx_rms,
         "coverage": float(m.mean()),
         "n_points": int(xs.size),
         "vsg": sr.gauge_length_px,
@@ -90,14 +94,14 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Synthetic speckle 512x512, noise sigma = {args.noise} grey levels, "
           f"step = {args.step} px, pre-filter sigma = 1 px.\n")
     print("| subset | step | strain window | VSG [px] | points | u noise floor [px] | "
-          "strain noise floor | stretch u RMS [px] | stretch exx RMS |")
+          "strain noise floor | stretch u RMS [px] | stretch Eeng_xx RMS |")
     print("|---|---|---|---|---|---|---|---|---|")
     for subset in args.subsets:
         for window in args.windows:
             r = measure(subset, args.step, window, args.noise)
             print(f"| {subset} | {args.step} | {window} | {r['vsg']:.0f} | {r['n_points']} | "
                   f"{r['u_rms']:.4f} | {r['strain_noise']:.3g} | {r['u_rms_stretch']:.4f} | "
-                  f"{r['exx_rms']:.3g} |")
+                  f"{r['Eeng_xx_rms']:.3g} |")
     print("\nReading the table: the displacement noise floor falls roughly as 1/subset; the strain")
     print("noise floor falls roughly as 1/(strain window) and as 1/VSG; the spatial resolution of")
     print("the strain is the VSG.  Choose the smallest subset that keeps the displacement noise")

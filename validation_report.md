@@ -24,13 +24,13 @@ Two independent parts:
 | Displacement v max [px] | 0.01705 |
 | Bias u [px] | 0.0002265 |
 | Bias v [px] | 0.0005339 |
-| Strain exx RMS [-] | 0.0001103 |
-| Strain exx max abs [-] | 0.0003154 |
-| Strain eyy RMS [-] | 8.569e-05 |
-| Strain eyy max abs [-] | 0.0002441 |
-| Strain gamma_xy RMS [-] | 0.0001293 |
-| Strain gamma_xy max abs [-] | 0.000374 |
-| Relative exx error RMS | 0.001245 |
+| Strain Eeng_xx RMS [-] | 0.0001103 |
+| Strain Eeng_xx max abs [-] | 0.0003154 |
+| Strain Eeng_yy RMS [-] | 8.569e-05 |
+| Strain Eeng_yy max abs [-] | 0.0002441 |
+| Strain Eeng_gamma_xy RMS [-] | 0.0001275 |
+| Strain Eeng_gamma_xy max abs [-] | 0.0003708 |
+| Relative Eeng_xx error RMS | 0.001245 |
 | Coverage of comparable points | 0.9378 |
 
 * Image noise (estimated): 3.52 grey levels (DIC matching residual).
@@ -38,35 +38,35 @@ Two independent parts:
 
 ### Per-frame errors
 
-| Frame | Comparable pts | Coverage | u RMS | u max | v RMS | v max | exx RMS | exx max | eyy RMS | gamma RMS |
+| Frame | Comparable pts | Coverage | u RMS | u max | v RMS | v max | Eeng_xx RMS | Eeng_xx max | Eeng_yy RMS | Eeng_gamma_xy RMS |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | 196 | 100.0% | 8.493e-15 | 2.842e-14 | 8.493e-15 | 2.842e-14 | 0 | 0 | 0 | 0 |
-| 5 | 196 | 100.0% | 0.004814 | 0.01256 | 0.005323 | 0.01805 | 8.709e-05 | 0.0002397 | 8.485e-05 | 0.0001267 |
-| 9 | 196 | 100.0% | 0.00524 | 0.0158 | 0.005508 | 0.01537 | 8.916e-05 | 0.0002684 | 9.075e-05 | 0.0001192 |
-| 13 | 196 | 100.0% | 0.005686 | 0.01423 | 0.005944 | 0.01749 | 8.716e-05 | 0.0002668 | 8.699e-05 | 0.0001204 |
-| 17 | 196 | 100.0% | 0.005953 | 0.0188 | 0.005143 | 0.01531 | 9.614e-05 | 0.0003431 | 7.987e-05 | 0.0001157 |
-| 21 | 196 | 100.0% | 0.005457 | 0.0179 | 0.005162 | 0.01722 | 8.645e-05 | 0.0002111 | 8.788e-05 | 0.0001215 |
-| 25 | 196 | 92.9% | 0.005864 | 0.01815 | 0.005576 | 0.01683 | 9.59e-05 | 0.000286 | 8.834e-05 | 0.000119 |
-| 29 | 196 | 85.7% | 0.005437 | 0.01312 | 0.005451 | 0.0152 | 9.858e-05 | 0.0002768 | 8.136e-05 | 0.0001254 |
-| 33 | 196 | 85.7% | 0.005775 | 0.0155 | 0.005485 | 0.01925 | 9.504e-05 | 0.0002949 | 8.098e-05 | 0.0001351 |
-| 37 | 196 | 85.7% | 0.006205 | 0.01854 | 0.005533 | 0.01856 | 0.0001066 | 0.0002902 | 8.297e-05 | 0.0001208 |
-| 41 | 168 | 100.0% | 0.006126 | 0.01907 | 0.005462 | 0.01803 | 0.0001055 | 0.0003562 | 8.405e-05 | 0.0001163 |
-| 45 | 168 | 100.0% | 0.006153 | 0.017 | 0.005852 | 0.02703 | 0.0001014 | 0.0002274 | 8.53e-05 | 0.0001311 |
-| 49 | 168 | 100.0% | 0.006308 | 0.02379 | 0.005364 | 0.01585 | 0.0001068 | 0.0002647 | 8.459e-05 | 0.0001363 |
-| 53 | 168 | 100.0% | 0.006913 | 0.0242 | 0.0052 | 0.01448 | 9.985e-05 | 0.0002635 | 8.847e-05 | 0.0001327 |
-| 57 | 168 | 100.0% | 0.006624 | 0.01947 | 0.005799 | 0.01733 | 0.0001148 | 0.0002923 | 9.847e-05 | 0.0001253 |
-| 61 | 168 | 100.0% | 0.006431 | 0.02038 | 0.005413 | 0.01477 | 0.0001209 | 0.0003349 | 8.154e-05 | 0.0001489 |
-| 65 | 168 | 91.7% | 0.007029 | 0.02491 | 0.005284 | 0.01852 | 0.0001171 | 0.0003093 | 8.327e-05 | 0.0001375 |
-| 69 | 168 | 91.7% | 0.006605 | 0.01833 | 0.00562 | 0.02087 | 0.0001252 | 0.0003396 | 9.177e-05 | 0.0001328 |
-| 73 | 168 | 83.3% | 0.00721 | 0.02261 | 0.005472 | 0.01753 | 0.000118 | 0.0003271 | 7.678e-05 | 0.0001361 |
-| 77 | 168 | 83.3% | 0.006602 | 0.02101 | 0.005217 | 0.01753 | 0.000126 | 0.0003656 | 8.321e-05 | 0.0001487 |
-| 81 | 168 | 83.3% | 0.00675 | 0.01826 | 0.005672 | 0.01615 | 0.0001301 | 0.0003878 | 9.347e-05 | 0.0001376 |
-| 85 | 168 | 83.3% | 0.007774 | 0.02242 | 0.00547 | 0.01561 | 0.0001431 | 0.0003994 | 8.571e-05 | 0.0001411 |
-| 89 | 168 | 83.3% | 0.007259 | 0.02392 | 0.005633 | 0.0154 | 0.0001277 | 0.0003085 | 8.466e-05 | 0.0001428 |
-| 93 | 140 | 100.0% | 0.007919 | 0.02693 | 0.005692 | 0.01597 | 0.0001358 | 0.0003638 | 8.187e-05 | 0.0001394 |
-| 97 | 140 | 100.0% | 0.007959 | 0.02246 | 0.005641 | 0.01271 | 0.0001364 | 0.000401 | 8.581e-05 | 0.0001557 |
+| 5 | 196 | 100.0% | 0.004814 | 0.01256 | 0.005323 | 0.01805 | 8.709e-05 | 0.0002397 | 8.485e-05 | 0.0001266 |
+| 9 | 196 | 100.0% | 0.00524 | 0.0158 | 0.005508 | 0.01537 | 8.916e-05 | 0.0002684 | 9.075e-05 | 0.0001194 |
+| 13 | 196 | 100.0% | 0.005686 | 0.01423 | 0.005944 | 0.01749 | 8.716e-05 | 0.0002668 | 8.699e-05 | 0.0001206 |
+| 17 | 196 | 100.0% | 0.005953 | 0.0188 | 0.005143 | 0.01531 | 9.614e-05 | 0.0003431 | 7.987e-05 | 0.0001159 |
+| 21 | 196 | 100.0% | 0.005457 | 0.0179 | 0.005162 | 0.01722 | 8.645e-05 | 0.0002111 | 8.788e-05 | 0.0001219 |
+| 25 | 196 | 92.9% | 0.005864 | 0.01815 | 0.005576 | 0.01683 | 9.59e-05 | 0.000286 | 8.834e-05 | 0.0001178 |
+| 29 | 196 | 85.7% | 0.005437 | 0.01312 | 0.005451 | 0.0152 | 9.858e-05 | 0.0002768 | 8.136e-05 | 0.0001252 |
+| 33 | 196 | 85.7% | 0.005775 | 0.0155 | 0.005485 | 0.01925 | 9.504e-05 | 0.0002949 | 8.098e-05 | 0.0001349 |
+| 37 | 196 | 85.7% | 0.006205 | 0.01854 | 0.005533 | 0.01856 | 0.0001066 | 0.0002902 | 8.297e-05 | 0.0001201 |
+| 41 | 168 | 100.0% | 0.006126 | 0.01907 | 0.005462 | 0.01803 | 0.0001055 | 0.0003562 | 8.405e-05 | 0.0001162 |
+| 45 | 168 | 100.0% | 0.006153 | 0.017 | 0.005852 | 0.02703 | 0.0001014 | 0.0002274 | 8.53e-05 | 0.0001281 |
+| 49 | 168 | 100.0% | 0.006308 | 0.02379 | 0.005364 | 0.01585 | 0.0001068 | 0.0002647 | 8.459e-05 | 0.0001344 |
+| 53 | 168 | 100.0% | 0.006913 | 0.0242 | 0.0052 | 0.01448 | 9.985e-05 | 0.0002635 | 8.847e-05 | 0.000132 |
+| 57 | 168 | 100.0% | 0.006624 | 0.01947 | 0.005799 | 0.01733 | 0.0001148 | 0.0002923 | 9.847e-05 | 0.0001244 |
+| 61 | 168 | 100.0% | 0.006431 | 0.02038 | 0.005413 | 0.01477 | 0.0001209 | 0.0003349 | 8.154e-05 | 0.0001461 |
+| 65 | 168 | 91.7% | 0.007029 | 0.02491 | 0.005284 | 0.01852 | 0.0001171 | 0.0003093 | 8.327e-05 | 0.0001376 |
+| 69 | 168 | 91.7% | 0.006605 | 0.01833 | 0.00562 | 0.02087 | 0.0001252 | 0.0003396 | 9.177e-05 | 0.0001303 |
+| 73 | 168 | 83.3% | 0.00721 | 0.02261 | 0.005472 | 0.01753 | 0.000118 | 0.0003271 | 7.678e-05 | 0.0001316 |
+| 77 | 168 | 83.3% | 0.006602 | 0.02101 | 0.005217 | 0.01753 | 0.000126 | 0.0003656 | 8.321e-05 | 0.0001473 |
+| 81 | 168 | 83.3% | 0.00675 | 0.01826 | 0.005672 | 0.01615 | 0.0001301 | 0.0003878 | 9.347e-05 | 0.0001325 |
+| 85 | 168 | 83.3% | 0.007774 | 0.02242 | 0.00547 | 0.01561 | 0.0001431 | 0.0003994 | 8.571e-05 | 0.0001396 |
+| 89 | 168 | 83.3% | 0.007259 | 0.02392 | 0.005633 | 0.0154 | 0.0001277 | 0.0003085 | 8.466e-05 | 0.0001374 |
+| 93 | 140 | 100.0% | 0.007919 | 0.02693 | 0.005692 | 0.01597 | 0.0001358 | 0.0003638 | 8.187e-05 | 0.0001341 |
+| 97 | 140 | 100.0% | 0.007959 | 0.02246 | 0.005641 | 0.01271 | 0.0001364 | 0.000401 | 8.581e-05 | 0.0001475 |
 
-* Mean `exx` versus the generator's own image-mean `eps_xx_img_mean`: RMS difference 2.029e-06 (final frame: recovered 0.4, truth 0.4).
+* Mean `Eeng_xx` (nominal) versus the generator's own image-mean nominal strain: RMS difference 2.028e-06 (final frame: recovered 0.4, truth 0.4).
 
 ### Interpretation
 
@@ -74,7 +74,7 @@ Two independent parts:
 * Strain RMS error 0.0001103 absolute on a strain field reaching 0.40 - i.e. about 0.01103 percentage points.
 * The reported coverage is the fraction of *comparable* ground-truth points where the pipeline produced a valid (non-NaN) result.
 
-**Speed:** the whole 100-frame comparison (correlation only) took 176.9 s (1.77 s/frame); the full validation pass including this run took 180.9 s.
+**Speed:** the whole 100-frame comparison (correlation only) took 179.2 s (1.79 s/frame); the full validation pass including this run took 183.3 s.
 
 ### Targets (PLAN.md) versus achieved
 
@@ -88,11 +88,11 @@ Two independent parts:
 | Rigid rotation 30 deg (incremental) displacement RMS | <= 0.05 px | 0.0171 px | PASS |
 | Rigid rotation 30 deg (single step) displacement RMS | <= 0.05 px | 0.0122 px | PASS |
 | Uniform stretch displacement RMS | <= 0.05 px | 0.0164 px | PASS |
-| Uniform stretch strain error | <= 2e-3 | exx 0.000255, eyy 0.000278 | PASS |
-| Non-uniform field strain error | <= 2e-3 | 0.000505 | PASS |
+| Uniform stretch strain error | <= 2e-3 | Eeng_xx 0.000255, Eeng_yy 0.000278 | PASS |
+| Non-uniform field strain error | <= 2e-3 | 0.000508 | PASS |
 | Affine shear strain error | <= 2e-3 | 0.000191 | PASS |
 | Coverage on the provided dataset (comparable points) | >= 90% | 93.8% | PASS |
-| Throughput on 1024^2 images | <= 60 s/frame | 1.77 s/frame | PASS |
+| Throughput on 1024^2 images | <= 60 s/frame | 1.79 s/frame | PASS |
 
 **13/13 targets met.** Every target was fixed in `PLAN.md` *before* the implementation was tuned.
 
@@ -102,150 +102,150 @@ Two independent parts:
 
 ## B. Synthetic ground-truth suite - 11/11 cases passed
 
-Each case is rendered analytically (exact ground truth) at 512x512 px with a 50%-coverage speckle pattern (speckle radius 3-6 px) unless stated otherwise. Errors are RMS over all valid points and frames, compared with the analytic fields on the correlation grid; strain is compared with the analytic gradients averaged over the virtual strain gauge (the exact expectation of the plane fit). Mode: full.
+Each case is rendered analytically (exact ground truth) at 512x512 px with a 50%-coverage speckle pattern (speckle radius 3-6 px) unless stated otherwise. Errors are RMS over all valid points and frames, compared with the analytic fields on the correlation grid; strain is compared with the nominal strain derived from the analytic gradients averaged over the virtual strain gauge (the exact expectation of the plane fit). Mode: full.
 
 ### Summary
 
 | Case | Criterion | u RMS [px] | u max [px] | strain RMS | coverage | wall [s] | Result |
 |---|---|---|---|---|---|---|---|
-| Zero motion baseline (noise floor) | u RMS <= 0.05 px and strain RMS <= 5e-4 | 0.0034 | 0.0164 | 5.93e-05 | 97.0% | 3.04 | PASS |
-| Sub-pixel rigid translation | u RMS <= 0.03 px, |bias| <= 0.02 px | 0.0154 | 0.0728 | 0.000297 | 98.3% | 2.91 | PASS |
-| Multi-pixel rigid translation | u RMS <= 0.03 px | 0.0137 | 0.0649 | 0.000198 | 96.7% | 3.01 | PASS |
-| Rigid rotation 30 deg (1 deg/frame) | u RMS <= 0.05 px and strain RMS <= 1e-3 (rotation must produce no strain) | 0.0171 | 0.0877 | 0.000326 | 87.3% | 16.87 | PASS |
-| Rigid rotation 30 deg (single step) | u RMS <= 0.05 px | 0.0122 | 0.0850 | 0.000228 | 90.0% | 5.63 | PASS |
-| Uniform stretch to 20% (and -5% transverse) | u RMS <= 0.05 px, |exx error| <= 2e-3, |eyy error| <= 2e-3 | 0.0164 | 0.0650 | 0.000302 | 89.0% | 6.97 | PASS |
-| Affine simple shear (gamma = 0.10) | u RMS <= 0.05 px, |gamma_xy error| <= 2e-3 | 0.0115 | 0.0576 | 0.000161 | 96.8% | 3.08 | PASS |
-| Non-uniform displacement field | u RMS <= 0.05 px and strain RMS <= 2e-3 | 0.0353 | 0.1511 | 0.000505 | 97.4% | 3.54 | PASS |
-| Linear illumination change | u RMS <= 0.05 px | 0.0265 | 0.1213 | 0.000417 | 100.0% | 4.02 | PASS |
-| Partially masked image (empty background) | detected ROI area within 20-80% of the image AND u RMS <= 0.05 px inside it | 0.0109 | 0.0394 | 0.000185 | 100.0% | 1.12 | PASS |
-| High noise (~2% of dynamic range) | u RMS <= 0.05 px | 0.0143 | 0.0688 | 0.000222 | 98.3% | 3.13 | PASS |
+| Zero motion baseline (noise floor) | u RMS <= 0.05 px and strain RMS <= 5e-4 | 0.0034 | 0.0164 | 5.93e-05 | 97.0% | 2.90 | PASS |
+| Sub-pixel rigid translation | u RMS <= 0.03 px, |bias| <= 0.02 px | 0.0154 | 0.0728 | 0.000297 | 98.3% | 2.72 | PASS |
+| Multi-pixel rigid translation | u RMS <= 0.03 px | 0.0137 | 0.0649 | 0.000198 | 96.7% | 2.95 | PASS |
+| Rigid rotation 30 deg (1 deg/frame) | u RMS <= 0.05 px and strain RMS <= 1e-3 (rotation must produce no strain) | 0.0171 | 0.0877 | 0.000325 | 87.3% | 16.48 | PASS |
+| Rigid rotation 30 deg (single step) | u RMS <= 0.05 px | 0.0122 | 0.0850 | 0.000227 | 90.0% | 5.46 | PASS |
+| Uniform stretch to 20% (and -5% transverse) | u RMS <= 0.05 px, |Eeng_xx error| <= 2e-3, |Eeng_yy error| <= 2e-3 | 0.0164 | 0.0650 | 0.000303 | 89.0% | 6.77 | PASS |
+| Affine simple shear (gamma = 0.10) | u RMS <= 0.05 px, |Eeng_gamma_xy error| <= 2e-3 | 0.0115 | 0.0576 | 0.000161 | 96.8% | 2.99 | PASS |
+| Non-uniform displacement field | u RMS <= 0.05 px and strain RMS <= 2e-3 | 0.0353 | 0.1511 | 0.000508 | 97.4% | 3.38 | PASS |
+| Linear illumination change | u RMS <= 0.05 px | 0.0265 | 0.1213 | 0.000417 | 100.0% | 3.90 | PASS |
+| Partially masked image (empty background) | detected ROI area within 20-80% of the image AND u RMS <= 0.05 px inside it | 0.0109 | 0.0394 | 0.000185 | 100.0% | 1.09 | PASS |
+| High noise (~2% of dynamic range) | u RMS <= 0.05 px | 0.0143 | 0.0688 | 0.000222 | 98.3% | 3.02 | PASS |
 
 ### Details
 
 #### Zero motion baseline (noise floor)
 
-* **Command:** `python -m dic /tmp/opencode/val_final2/validation_data/zero_motion /tmp/opencode/val_final2/case_zero_motion --subset 41 --step 16 --no-figures`
+* **Command:** `python -m dic /tmp/opencode/dic_validation_rename/validation_data/zero_motion /tmp/opencode/dic_validation_rename/case_zero_motion --subset 41 --step 16 --no-figures`
 * **Description:** Three frames of the same pattern with independent additive noise (sigma = 2 grey levels). The true displacement and strain are zero.
 * **Criterion (stated before running):** u RMS <= 0.05 px and strain RMS <= 5e-4
 * **Measured:** u RMS 0.0034 px, u max 0.0164 px, bias 0.0003 px; v RMS 0.0032 px, bias 0.0002 px
-* **Strain:** exx RMS 4.96e-05, eyy RMS 4.88e-05, gamma RMS 7.55e-05, overall strain RMS 5.93e-05
+* **Strain:** Eeng_xx RMS 4.96e-05, Eeng_yy RMS 4.88e-05, Eeng_gamma_xy RMS 7.55e-05, overall strain RMS 5.93e-05
 * **Coverage:** 97.0% of grid points valid
-* **Speed:** correlation 1.31 s for 3 frames
+* **Speed:** correlation 1.24 s for 3 frames
 * **Result:** **PASS** - u_rms=0.0034 (<=0.05), strain_rms=5.93e-05 (<=5e-4)
 
 #### Sub-pixel rigid translation
 
-* **Command:** `python -m dic /tmp/opencode/val_final2/validation_data/translation_subpixel /tmp/opencode/val_final2/case_translation_subpixel --subset 41 --step 16 --no-figures`
+* **Command:** `python -m dic /tmp/opencode/dic_validation_rename/validation_data/translation_subpixel /tmp/opencode/dic_validation_rename/case_translation_subpixel --subset 41 --step 16 --no-figures`
 * **Description:** Reference plus one frame translated by (0.37, -0.61) px, noise 2 grey.
 * **Criterion (stated before running):** u RMS <= 0.03 px, |bias| <= 0.02 px
 * **Measured:** u RMS 0.0154 px, u max 0.0728 px, bias 0.0006 px; v RMS 0.0168 px, bias -0.0003 px
-* **Strain:** exx RMS 0.000234, eyy RMS 0.000265, gamma RMS 0.000375, overall strain RMS 0.000297
+* **Strain:** Eeng_xx RMS 0.000234, Eeng_yy RMS 0.000265, Eeng_gamma_xy RMS 0.000375, overall strain RMS 0.000297
 * **Coverage:** 98.3% of grid points valid
-* **Speed:** correlation 1.01 s for 2 frames
+* **Speed:** correlation 0.94 s for 2 frames
 * **Result:** **PASS** - u_rms=0.0154 (<=0.03), bias=(0.0006,-0.0003) (|.|<=0.02)
 
 #### Multi-pixel rigid translation
 
-* **Command:** `python -m dic /tmp/opencode/val_final2/validation_data/translation_multipixel /tmp/opencode/val_final2/case_translation_multipixel --subset 41 --step 16 --no-figures`
+* **Command:** `python -m dic /tmp/opencode/dic_validation_rename/validation_data/translation_multipixel /tmp/opencode/dic_validation_rename/case_translation_multipixel --subset 41 --step 16 --no-figures`
 * **Description:** Reference plus one frame translated by (12.3, 7.9) px, noise 2 grey.
 * **Criterion (stated before running):** u RMS <= 0.03 px
 * **Measured:** u RMS 0.0137 px, u max 0.0649 px, bias -0.0001 px; v RMS 0.0084 px, bias 0.0006 px
-* **Strain:** exx RMS 0.00022, eyy RMS 0.000132, gamma RMS 0.000227, overall strain RMS 0.000198
+* **Strain:** Eeng_xx RMS 0.00022, Eeng_yy RMS 0.000132, Eeng_gamma_xy RMS 0.000227, overall strain RMS 0.000198
 * **Coverage:** 96.7% of grid points valid
-* **Speed:** correlation 1.19 s for 2 frames
+* **Speed:** correlation 1.17 s for 2 frames
 * **Result:** **PASS** - u_rms=0.0137 (<=0.03)
 
 #### Rigid rotation 30 deg (1 deg/frame)
 
-* **Command:** `python -m dic /tmp/opencode/val_final2/validation_data/rotation_30_incremental /tmp/opencode/val_final2/case_rotation_30_incremental --subset 41 --step 16 --no-figures`
+* **Command:** `python -m dic /tmp/opencode/dic_validation_rename/validation_data/rotation_30_incremental /tmp/opencode/dic_validation_rename/case_rotation_30_incremental --subset 41 --step 16 --no-figures`
 * **Description:** 31 frames rotating the pattern by 1 deg per frame about the image centre (30 deg total), noise 2 grey.
 * **Criterion (stated before running):** u RMS <= 0.05 px and strain RMS <= 1e-3 (rotation must produce no strain)
 * **Measured:** u RMS 0.0171 px, u max 0.0877 px, bias 0.0016 px; v RMS 0.0186 px, bias 0.0005 px
-* **Strain:** exx RMS 0.000268, eyy RMS 0.000303, gamma RMS 0.000392, overall strain RMS 0.000326
+* **Strain:** Eeng_xx RMS 0.000264, Eeng_yy RMS 0.000302, Eeng_gamma_xy RMS 0.000395, overall strain RMS 0.000325
 * **Coverage:** 87.3% of grid points valid
-* **Speed:** correlation 14.98 s for 31 frames
-* **Result:** **PASS** - u_rms=0.0171 (<=0.05), strain_rms=0.000326 (<=1e-3)
+* **Speed:** correlation 14.63 s for 31 frames
+* **Result:** **PASS** - u_rms=0.0171 (<=0.05), strain_rms=0.000325 (<=1e-3)
 
 #### Rigid rotation 30 deg (single step)
 
-* **Command:** `python -m dic /tmp/opencode/val_final2/validation_data/rotation_30_single_step /tmp/opencode/val_final2/case_rotation_30_single_step --subset 41 --step 16 --no-figures`
+* **Command:** `python -m dic /tmp/opencode/dic_validation_rename/validation_data/rotation_30_single_step /tmp/opencode/dic_validation_rename/case_rotation_30_single_step --subset 41 --step 16 --no-figures`
 * **Description:** Reference plus one frame rotated 30 deg in a single step, noise 2 grey. Exercises the multi-scale initial guess.
 * **Criterion (stated before running):** u RMS <= 0.05 px
 * **Measured:** u RMS 0.0122 px, u max 0.0850 px, bias 0.0002 px; v RMS 0.0123 px, bias 0.0005 px
-* **Strain:** exx RMS 0.000179, eyy RMS 0.000191, gamma RMS 0.000296, overall strain RMS 0.000228
+* **Strain:** Eeng_xx RMS 0.000186, Eeng_yy RMS 0.000202, Eeng_gamma_xy RMS 0.000281, overall strain RMS 0.000227
 * **Coverage:** 90.0% of grid points valid
-* **Speed:** correlation 3.81 s for 2 frames
+* **Speed:** correlation 3.67 s for 2 frames
 * **Result:** **PASS** - u_rms=0.0122 (<=0.05)
 
 #### Uniform stretch to 20% (and -5% transverse)
 
-* **Command:** `python -m dic /tmp/opencode/val_final2/validation_data/stretch_20 /tmp/opencode/val_final2/case_stretch_20 --subset 41 --step 16 --no-figures`
+* **Command:** `python -m dic /tmp/opencode/dic_validation_rename/validation_data/stretch_20 /tmp/opencode/dic_validation_rename/case_stretch_20 --subset 41 --step 16 --no-figures`
 * **Description:** 11 frames ramping a uniform affine stretch from 0 to ex=+0.20, ey=-0.05, noise 2 grey.
-* **Criterion (stated before running):** u RMS <= 0.05 px, |exx error| <= 2e-3, |eyy error| <= 2e-3
+* **Criterion (stated before running):** u RMS <= 0.05 px, |Eeng_xx error| <= 2e-3, |Eeng_yy error| <= 2e-3
 * **Measured:** u RMS 0.0164 px, u max 0.0650 px, bias 0.0019 px; v RMS 0.0171 px, bias 0.0002 px
-* **Strain:** exx RMS 0.000255, eyy RMS 0.000278, gamma RMS 0.000363, overall strain RMS 0.000302
+* **Strain:** Eeng_xx RMS 0.000255, Eeng_yy RMS 0.000278, Eeng_gamma_xy RMS 0.000364, overall strain RMS 0.000303
 * **Coverage:** 89.0% of grid points valid
-* **Speed:** correlation 5.12 s for 11 frames
-* **Result:** **PASS** - u_rms=0.0164 (<=0.05), exx_rms=0.000255, eyy_rms=0.000278 (<=2e-3)
+* **Speed:** correlation 4.97 s for 11 frames
+* **Result:** **PASS** - u_rms=0.0164 (<=0.05), Eeng_xx_rms=0.000255, Eeng_yy_rms=0.000278 (<=2e-3)
 
 #### Affine simple shear (gamma = 0.10)
 
-* **Command:** `python -m dic /tmp/opencode/val_final2/validation_data/shear_affine /tmp/opencode/val_final2/case_shear_affine --subset 41 --step 16 --no-figures`
-* **Description:** Reference plus one frame with engineering shear gamma_xy = 0.10, noise 2 grey.
-* **Criterion (stated before running):** u RMS <= 0.05 px, |gamma_xy error| <= 2e-3
+* **Command:** `python -m dic /tmp/opencode/dic_validation_rename/validation_data/shear_affine /tmp/opencode/dic_validation_rename/case_shear_affine --subset 41 --step 16 --no-figures`
+* **Description:** Reference plus one frame with simple-shear parameter gamma = 0.10, noise 2 grey.
+* **Criterion (stated before running):** u RMS <= 0.05 px, |Eeng_gamma_xy error| <= 2e-3
 * **Measured:** u RMS 0.0115 px, u max 0.0576 px, bias 0.0002 px; v RMS 0.0061 px, bias 0.0000 px
-* **Strain:** exx RMS 0.000181, eyy RMS 9.32e-05, gamma RMS 0.000191, overall strain RMS 0.000161
+* **Strain:** Eeng_xx RMS 0.000181, Eeng_yy RMS 9.21e-05, Eeng_gamma_xy RMS 0.000191, overall strain RMS 0.000161
 * **Coverage:** 96.8% of grid points valid
-* **Speed:** correlation 1.25 s for 2 frames
-* **Result:** **PASS** - u_rms=0.0115 (<=0.05), gamma_rms=0.000191 (<=2e-3)
+* **Speed:** correlation 1.19 s for 2 frames
+* **Result:** **PASS** - u_rms=0.0115 (<=0.05), Eeng_gamma_xy_rms=0.000191 (<=2e-3)
 
 #### Non-uniform displacement field
 
-* **Command:** `python -m dic /tmp/opencode/val_final2/validation_data/nonuniform /tmp/opencode/val_final2/case_nonuniform --subset 41 --step 16 --no-figures`
-* **Description:** Smooth sinusoidal + linear displacement field; checked against its analytic gradients averaged over the virtual strain gauge.
+* **Command:** `python -m dic /tmp/opencode/dic_validation_rename/validation_data/nonuniform /tmp/opencode/dic_validation_rename/case_nonuniform --subset 41 --step 16 --no-figures`
+* **Description:** Smooth sinusoidal + linear displacement field; checked against its analytic nominal strain from gradients averaged over the virtual strain gauge.
 * **Criterion (stated before running):** u RMS <= 0.05 px and strain RMS <= 2e-3
 * **Measured:** u RMS 0.0353 px, u max 0.1511 px, bias 0.0008 px; v RMS 0.0452 px, bias -0.0003 px
-* **Strain:** exx RMS 0.000204, eyy RMS 0.000213, gamma RMS 0.000824, overall strain RMS 0.000505
+* **Strain:** Eeng_xx RMS 0.000206, Eeng_yy RMS 0.000217, Eeng_gamma_xy RMS 0.000828, overall strain RMS 0.000508
 * **Coverage:** 97.4% of grid points valid
-* **Speed:** correlation 1.68 s for 2 frames
-* **Result:** **PASS** - u_rms=0.0353 (<=0.05), strain_rms=0.000505 (<=2e-3)
+* **Speed:** correlation 1.61 s for 2 frames
+* **Result:** **PASS** - u_rms=0.0353 (<=0.05), strain_rms=0.000508 (<=2e-3)
 
 #### Linear illumination change
 
-* **Command:** `python -m dic /tmp/opencode/val_final2/validation_data/illumination /tmp/opencode/val_final2/case_illumination --subset 41 --step 16 --no-figures`
+* **Command:** `python -m dic /tmp/opencode/dic_validation_rename/validation_data/illumination /tmp/opencode/dic_validation_rename/case_illumination --subset 41 --step 16 --no-figures`
 * **Description:** Frame translated by (5, 3) px with gain 1.15, offset +12 grey and a linear illumination ramp.
 * **Criterion (stated before running):** u RMS <= 0.05 px
 * **Measured:** u RMS 0.0265 px, u max 0.1213 px, bias 0.0038 px; v RMS 0.0247 px, bias 0.0006 px
-* **Strain:** exx RMS 0.000385, eyy RMS 0.000364, gamma RMS 0.00049, overall strain RMS 0.000417
+* **Strain:** Eeng_xx RMS 0.000385, Eeng_yy RMS 0.000364, Eeng_gamma_xy RMS 0.00049, overall strain RMS 0.000417
 * **Coverage:** 100.0% of grid points valid
-* **Speed:** correlation 1.47 s for 2 frames
+* **Speed:** correlation 1.41 s for 2 frames
 * **Result:** **PASS** - u_rms=0.0265 (<=0.05)
 
 #### Partially masked image (empty background)
 
-* **Command:** `python -m dic /tmp/opencode/val_final2/validation_data/masked_background /tmp/opencode/val_final2/case_masked_background --subset 41 --step 16 --no-figures`
+* **Command:** `python -m dic /tmp/opencode/dic_validation_rename/validation_data/masked_background /tmp/opencode/dic_validation_rename/case_masked_background --subset 41 --step 16 --no-figures`
 * **Description:** Speckle only inside a central rectangle; the rest of the frame is flat background. The automatic ROI detector must exclude the background.
 * **Criterion (stated before running):** detected ROI area within 20-80% of the image AND u RMS <= 0.05 px inside it
 * **Measured:** u RMS 0.0109 px, u max 0.0394 px, bias 0.0005 px; v RMS 0.0109 px, bias 0.0015 px
-* **Strain:** exx RMS 0.000134, eyy RMS 0.000192, gamma RMS 0.000219, overall strain RMS 0.000185
+* **Strain:** Eeng_xx RMS 0.000134, Eeng_yy RMS 0.000192, Eeng_gamma_xy RMS 0.00022, overall strain RMS 0.000185
 * **Coverage:** 100.0% of grid points valid
-* **Speed:** correlation 0.48 s for 2 frames
+* **Speed:** correlation 0.47 s for 2 frames
 * **Result:** **PASS** - ROI fraction=0.402 (in [0.2,0.8]), u_rms=0.0109 (<=0.05)
 
 #### High noise (~2% of dynamic range)
 
-* **Command:** `python -m dic /tmp/opencode/val_final2/validation_data/noise_2pct /tmp/opencode/val_final2/case_noise_2pct --subset 41 --step 16 --no-figures`
+* **Command:** `python -m dic /tmp/opencode/dic_validation_rename/validation_data/noise_2pct /tmp/opencode/dic_validation_rename/case_noise_2pct --subset 41 --step 16 --no-figures`
 * **Description:** Translation (3.3, -2.1) px with additive Gaussian noise of sigma = 5.1 grey levels (2% of 255).
 * **Criterion (stated before running):** u RMS <= 0.05 px
 * **Measured:** u RMS 0.0143 px, u max 0.0688 px, bias 0.0004 px; v RMS 0.0106 px, bias 0.0008 px
-* **Strain:** exx RMS 0.000238, eyy RMS 0.000161, gamma RMS 0.000257, overall strain RMS 0.000222
+* **Strain:** Eeng_xx RMS 0.000238, Eeng_yy RMS 0.000161, Eeng_gamma_xy RMS 0.000257, overall strain RMS 0.000222
 * **Coverage:** 98.3% of grid points valid
-* **Speed:** correlation 1.30 s for 2 frames
+* **Speed:** correlation 1.24 s for 2 frames
 * **Result:** **PASS** - u_rms=0.0143 (<=0.05)
 
 ### Notes
 
 * The uniform-stretch, shear, translation and rotation cases have *exact* affine ground truth, for which the affine subset shape function is exact; the residual error is dominated by interpolation bias and image noise.
-* The non-uniform case is compared against the analytic gradients **averaged over the strain window**, because a plane fit reports a windowed average by construction.
+* The non-uniform case is compared against the analytic nominal strain computed from gradients **averaged over the strain window**, because a plane fit reports a windowed average by construction.
 * Strain error on the sharp-edged synthetic speckle is dominated by interpolation (aliasing) bias of the non-band-limited pattern, which is why the images are Gaussian-prefiltered before correlation (sigma = 1.0 px).
 * The single-step 30-degree rotation exercises the rotation-aware multi-scale initial guess; the incremental 30-degree case exercises temporal prediction with no reference updating (no accumulation).

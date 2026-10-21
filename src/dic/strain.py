@@ -7,11 +7,22 @@ processed in one pass.
 
 Sign / coordinate conventions (image frame, x to the right, y downwards):
 
-* ``exx = du/dx``, ``eyy = dv/dy``, ``gamma_xy = du/dy + dv/dx`` (engineering shear).
 * ``F = I + grad(u)`` is the deformation gradient in the image frame.
-* Green-Lagrange strain ``E = 1/2 (F^T F - I)``.
-* The engineering (small-strain) tensor equals ``sym(F) - I`` and is only valid for small strain;
-  the caller is warned when it exceeds ``StrainConfig.engineering_validity_limit``.
+* The primary strain measure is the **nominal (Biot/engineering) strain**
+
+  ``eps_N = V - I = (F F^T)^(1/2) - I``
+
+  where ``V`` is the left stretch tensor.  Its principal values are the engineering
+  strains ``lambda_i - 1`` and its principal directions are in the current
+  configuration.  This is the measure Abaqus reports as ``NE`` (nominal strain).
+* The secondary finite-strain measure is the **true (logarithmic/Hencky) strain**
+  ``T = ln(V)``, the matrix logarithm of the left stretch tensor.  Its principal
+  values are ``ln(lambda_i)`` and its principal directions are in the current
+  configuration.
+
+The output fields are named ``Eeng_*`` for the nominal strain and ``Etr_*`` for the true
+strain (principal values ``Eeng_1``/``Eeng_2`` and ``Etr_1``/``Etr_2``, equivalent strains
+``Eeng_eq`` and ``Etr_eq``).
 
 The effective spatial resolution of the strain is the virtual strain gauge length
 ``L_VSG = (window - 1) * step + subset`` (iDICs Good Practices Guide, Ch. 5).
@@ -19,15 +30,13 @@ The effective spatial resolution of the strain is the virtual strain gauge lengt
 
 from __future__ import annotations
 
-import logging
 from dataclasses import dataclass
 
 import numpy as np
 from scipy import ndimage
 
 from .config import StrainConfig
-
-logger = logging.getLogger(__name__)
+from .kinematics import left_stretch, true_strain
 
 _EPS = 1e-12
 
@@ -131,7 +140,7 @@ def compute_strains(
     *,
     subset_size: int = 1,
 ) -> StrainResult:
-    """Compute engineering and finite strain fields from a displacement field.
+    """Compute nominal (Biot) and true (logarithmic) strain from a displacement field.
 
     Parameters
     ----------
@@ -161,41 +170,55 @@ def compute_strains(
     F21 = dv_dx
     F22 = 1.0 + dv_dy
 
-    # Engineering (small) strain = sym(F) - I
-    exx = du_dx
-    eyy = dv_dy
-    gamma_xy = du_dy + dv_dx
-    exy = 0.5 * gamma_xy
+    # Nominal (Biot/engineering) strain: Eeng = V - I, V = sqrt(F F^T).
+    # The principal values of V - I are lambda_i - 1, i.e. the engineering strains.
+    V11, V12, V22 = left_stretch(F11, F12, F21, F22)
+    Eeng_xx = V11 - 1.0
+    Eeng_yy = V22 - 1.0
+    Eeng_xy = V12
+    Eeng_gamma_xy = 2.0 * V12
 
-    # Green-Lagrange strain
-    Exx = 0.5 * (F11 * F11 + F21 * F21 - 1.0)
-    Eyy = 0.5 * (F12 * F12 + F22 * F22 - 1.0)
-    Exy = 0.5 * (F11 * F12 + F21 * F22)
-    Egamma_xy = 2.0 * Exy
+    # True (logarithmic/Hencky) strain: Etr = ln(V), the matrix logarithm of V.
+    Etr_xx, Etr_xy, Etr_yy = true_strain(F11, F12, F21, F22)
+    Etr_gamma_xy = 2.0 * Etr_xy
 
     # Rotation: small-angle and finite (polar decomposition of F)
     omega = 0.5 * (dv_dx - du_dy)
     theta = _finite_rotation(F11, F12, F21, F22)
 
-    # Principal engineering strains and directions
-    e_mean = 0.5 * (exx + eyy)
-    e_rad = np.sqrt((0.5 * (exx - eyy)) ** 2 + exy * exy)
-    e1 = e_mean + e_rad
-    e2 = e_mean - e_rad
-    theta_p = 0.5 * np.arctan2(gamma_xy, exx - eyy)
+    # Principal nominal strains and directions (current configuration)
+    Eeng_mean = 0.5 * (Eeng_xx + Eeng_yy)
+    Eeng_rad = np.sqrt((0.5 * (Eeng_xx - Eeng_yy)) ** 2 + Eeng_xy * Eeng_xy)
+    Eeng_1 = Eeng_mean + Eeng_rad
+    Eeng_2 = Eeng_mean - Eeng_rad
+    theta_p = 0.5 * np.arctan2(Eeng_gamma_xy, Eeng_xx - Eeng_yy)
 
-    # Principal Green-Lagrange strains
-    E_mean = 0.5 * (Exx + Eyy)
-    E_rad = np.sqrt((0.5 * (Exx - Eyy)) ** 2 + Exy * Exy)
-    E1 = E_mean + E_rad
-    E2 = E_mean - E_rad
+    # Principal true strains: eigenvalues of ln(V) are ln(lambda_i).
+    Etr_mean = 0.5 * (Etr_xx + Etr_yy)
+    Etr_rad = np.sqrt((0.5 * (Etr_xx - Etr_yy)) ** 2 + Etr_xy * Etr_xy)
+    Etr_1 = Etr_mean + Etr_rad
+    Etr_2 = Etr_mean - Etr_rad
 
-    # Equivalent (von Mises) strain, plane-strain incompressibility eps_zz = -(eps_xx+eps_yy)
-    eps_eq = np.sqrt(
-        (2.0 / 3.0) * (exx * exx + eyy * eyy + (exx + eyy) ** 2 + 2.0 * exy * exy)
+    # Equivalent (von Mises) strain of the nominal components, using the small-strain
+    # plane-strain relation Eeng_zz = -(Eeng_xx + Eeng_yy).  For true strain the same
+    # relation is exact for isochoric plane strain: Etr_zz = -(Etr_xx + Etr_yy).
+    Eeng_eq = np.sqrt(
+        (2.0 / 3.0)
+        * (
+            Eeng_xx * Eeng_xx
+            + Eeng_yy * Eeng_yy
+            + (Eeng_xx + Eeng_yy) ** 2
+            + 2.0 * Eeng_xy * Eeng_xy
+        )
     )
-    E_eq = np.sqrt(
-        (2.0 / 3.0) * (Exx * Exx + Eyy * Eyy + (Exx + Eyy) ** 2 + 2.0 * Exy * Exy)
+    Etr_eq = np.sqrt(
+        (2.0 / 3.0)
+        * (
+            Etr_xx * Etr_xx
+            + Etr_yy * Etr_yy
+            + (Etr_xx + Etr_yy) ** 2
+            + 2.0 * Etr_xy * Etr_xy
+        )
     )
 
     fields = {
@@ -203,35 +226,24 @@ def compute_strains(
         "du_dy": du_dy,
         "dv_dx": dv_dx,
         "dv_dy": dv_dy,
-        "exx": exx,
-        "eyy": eyy,
-        "exy": exy,
-        "gamma_xy": gamma_xy,
-        "Exx": Exx,
-        "Eyy": Eyy,
-        "Exy": Exy,
-        "Egamma_xy": Egamma_xy,
+        "Eeng_xx": Eeng_xx,
+        "Eeng_yy": Eeng_yy,
+        "Eeng_xy": Eeng_xy,
+        "Eeng_gamma_xy": Eeng_gamma_xy,
+        "Eeng_1": Eeng_1,
+        "Eeng_2": Eeng_2,
+        "Eeng_eq": Eeng_eq,
+        "Etr_xx": Etr_xx,
+        "Etr_yy": Etr_yy,
+        "Etr_xy": Etr_xy,
+        "Etr_gamma_xy": Etr_gamma_xy,
+        "Etr_1": Etr_1,
+        "Etr_2": Etr_2,
+        "Etr_eq": Etr_eq,
         "omega": omega,
         "theta_deg": np.degrees(theta),
-        "e1": e1,
-        "e2": e2,
         "theta_p_deg": np.degrees(theta_p),
-        "E1": E1,
-        "E2": E2,
-        "eps_eq": eps_eq,
-        "E_eq": E_eq,
     }
-
-    finite = np.isfinite(exx) & np.isfinite(eyy)
-    if finite.any():
-        peak = float(np.nanmax(np.abs(np.stack([exx[finite], eyy[finite], gamma_xy[finite]]))))
-        if peak > cfg.engineering_validity_limit:
-            logger.warning(
-                "Engineering strain reaches %.4f, above the small-strain validity limit %.4f. "
-                "Use the Green-Lagrange fields (Exx, Eyy, Exy) at this deformation level.",
-                peak,
-                cfg.engineering_validity_limit,
-            )
 
     gauge = (window - 1) * max(dx, dy) + subset_size
     return StrainResult(fields=fields, valid=valid_out, gauge_length_px=float(gauge))

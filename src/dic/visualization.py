@@ -10,9 +10,9 @@ Design choices (justified in ``DECISIONS.md``):
   reference positions), which is useful when you want to compare fields in a common frame.
 * The displacement figure shows ``u_x``, ``u_y`` and ``|u|``; the third panel carries a subsampled
   displacement-vector (quiver) overlay.
-* The strain figure shows the engineering components (top row) next to the Green-Lagrange
-  components (bottom row) so the small-strain-versus-finite-strain distinction is visible at a
-  glance.
+* The strain figure shows the nominal (Biot) components (top row) next to the true
+  (logarithmic/Hencky) components (bottom row) so the two finite-strain measures can be compared
+  at a glance.
 * A growing-field animation, mean/max-versus-time curves, line profiles and an uncertainty map
   are added because a mechanical-testing engineer uses them to check a test.
 """
@@ -172,31 +172,24 @@ def plot_displacement(
 
 
 def plot_strain(result: RunResult, frame: FrameFields, path: Path, cfg: OutputConfig) -> Path:
-    """Strain overlay for one frame: engineering (top) and Green-Lagrange (bottom)."""
+    """Strain overlay for one frame: nominal (top) and true/logarithmic (bottom)."""
     base, X, Y, deformed = _view(result, frame, cfg)
     s = frame.strain
     panels = [
-        (s["exx"], r"$\varepsilon_{xx}$ (engineering)", "strain [-]"),
-        (s["eyy"], r"$\varepsilon_{yy}$ (engineering)", "strain [-]"),
-        (s["gamma_xy"], r"$\gamma_{xy}$ (engineering)", "strain [-]"),
-        (s["Exx"], r"$E_{xx}$ (Green-Lagrange)", "strain [-]"),
-        (s["Eyy"], r"$E_{yy}$ (Green-Lagrange)", "strain [-]"),
-        (s["Egamma_xy"], r"$\Gamma_{xy}$ (Green-Lagrange)", "strain [-]"),
+        (s["Eeng_xx"], "Eeng_xx (nominal, V - I)", "strain [-]"),
+        (s["Eeng_yy"], "Eeng_yy (nominal, V - I)", "strain [-]"),
+        (s["Eeng_gamma_xy"], "Eeng_gamma_xy (nominal, V - I)", "strain [-]"),
+        (s["Etr_xx"], "Etr_xx (true, ln V)", "strain [-]"),
+        (s["Etr_yy"], "Etr_yy (true, ln V)", "strain [-]"),
+        (s["Etr_gamma_xy"], "Etr_gamma_xy (true, ln V)", "strain [-]"),
     ]
     fig, axes = plt.subplots(2, 3, figsize=(15, 8.6), constrained_layout=True)
     for ax, (field, title, unit) in zip(axes.ravel(), panels, strict=False):
         _overlay(ax, base, X, Y, field, title, unit, cfg.contour_levels, cfg.overlay_alpha)
         _draw_roi(ax, result, frame, deformed)
-    eng_peak = np.nanmax(np.abs(np.stack([s["exx"], s["eyy"], s["gamma_xy"]])))
-    note = (
-        f" | engineering strain outside small-strain validity ({eng_peak:.3f} > "
-        f"{result.cfg.strain.engineering_validity_limit}) - read the Green-Lagrange row"
-        if np.isfinite(eng_peak) and eng_peak > result.cfg.strain.engineering_validity_limit
-        else ""
-    )
     fig.suptitle(
         f"2D DIC strain - {frame.name}  (load {frame.t_load:.3f}), VSG "
-        f"{s.gauge_length_px:.0f} px{note}",
+        f"{s.gauge_length_px:.0f} px | top: nominal V - I (Abaqus NE) | bottom: true ln V",
         fontsize=11,
     )
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -252,7 +245,7 @@ def plot_curves(result: RunResult, path: Path, cfg: OutputConfig) -> Path:
     t = np.array([f.time for f in result.frames])
     t_load = np.array([f.t_load for f in result.frames])
     u_mean, v_mean, u_max, umag_max, cov = [], [], [], [], []
-    exx, eyy, eq = [], [], []
+    Eeng_xx, Eeng_yy, Eeng_eq = [], [], []
     for f in result.frames:
         m = f.valid
         u = f.ux[m]
@@ -262,9 +255,9 @@ def plot_curves(result: RunResult, path: Path, cfg: OutputConfig) -> Path:
         u_max.append(np.max(np.abs(u)) if m.any() else np.nan)
         umag_max.append(np.max(np.hypot(u, v)) if m.any() else np.nan)
         cov.append(f.coverage)
-        exx.append(np.nanmean(f.strain["exx"]))
-        eyy.append(np.nanmean(f.strain["eyy"]))
-        eq.append(np.nanmean(f.strain["eps_eq"]))
+        Eeng_xx.append(np.nanmean(f.strain["Eeng_xx"]))
+        Eeng_yy.append(np.nanmean(f.strain["Eeng_yy"]))
+        Eeng_eq.append(np.nanmean(f.strain["Eeng_eq"]))
 
     fig, axes = plt.subplots(2, 2, figsize=(12, 8), constrained_layout=True)
     axes[0, 0].plot(t, u_mean, "-o", ms=3, label=r"mean $u_x$")
@@ -277,16 +270,16 @@ def plot_curves(result: RunResult, path: Path, cfg: OutputConfig) -> Path:
     axes[0, 0].set_title("Displacement versus time")
     axes[0, 0].grid(alpha=0.3)
 
-    axes[0, 1].plot(t, np.array(exx) * 100, "-o", ms=3, label=r"mean $\varepsilon_{xx}$")
-    axes[0, 1].plot(t, np.array(eyy) * 100, "-s", ms=3, label=r"mean $\varepsilon_{yy}$")
-    axes[0, 1].plot(t, np.array(eq) * 100, "-^", ms=3, label=r"mean $\varepsilon_{eq}$")
+    axes[0, 1].plot(t, np.array(Eeng_xx) * 100, "-o", ms=3, label="mean Eeng_xx")
+    axes[0, 1].plot(t, np.array(Eeng_yy) * 100, "-s", ms=3, label="mean Eeng_yy")
+    axes[0, 1].plot(t, np.array(Eeng_eq) * 100, "-^", ms=3, label="mean Eeng_eq")
     axes[0, 1].set_xlabel("time")
     axes[0, 1].set_ylabel("strain [%]")
     axes[0, 1].legend(fontsize=8)
-    axes[0, 1].set_title("Mean strain versus time")
+    axes[0, 1].set_title("Mean nominal strain versus time")
     axes[0, 1].grid(alpha=0.3)
 
-    axes[1, 0].plot(t_load, np.asarray(cov) * 100, "-o", ms=3, color="tab:green")
+    axes[1, 0].plot(t_load, np.asarray(cov) * 100, "-o", ms=3, color="C2")
     axes[1, 0].set_xlabel("load parameter t")
     axes[1, 0].set_ylabel("valid coverage [%]")
     axes[1, 0].set_title("Valid-point coverage")
@@ -324,8 +317,8 @@ def plot_profiles(result: RunResult, path: Path, cfg: OutputConfig) -> Path:
     imid = result.ny // 2
     ux = _field_grid(f.ux, result.xs, result.ys, result.ny, result.nx)
     uy = _field_grid(f.uy, result.xs, result.ys, result.ny, result.nx)
-    exx = f.strain["exx"]
-    eyy = f.strain["eyy"]
+    Eeng_xx = f.strain["Eeng_xx"]
+    Eeng_yy = f.strain["Eeng_yy"]
     scale = result.cfg.scale
 
     fig, axes = plt.subplots(2, 2, figsize=(12, 7), constrained_layout=True)
@@ -345,20 +338,20 @@ def plot_profiles(result: RunResult, path: Path, cfg: OutputConfig) -> Path:
     axes[0, 1].legend(fontsize=8)
     axes[0, 1].grid(alpha=0.3)
 
-    axes[1, 0].plot(nx_vals, exx[imid] * 100, "-o", ms=3, label=r"$\varepsilon_{xx}$")
-    axes[1, 0].plot(nx_vals, eyy[imid] * 100, "-s", ms=3, label=r"$\varepsilon_{yy}$")
+    axes[1, 0].plot(nx_vals, Eeng_xx[imid] * 100, "-o", ms=3, label="Eeng_xx")
+    axes[1, 0].plot(nx_vals, Eeng_yy[imid] * 100, "-s", ms=3, label="Eeng_yy")
     axes[1, 0].set_xlabel("x [px]")
     axes[1, 0].set_ylabel("strain [%]")
     axes[1, 0].legend(fontsize=8)
     axes[1, 0].grid(alpha=0.3)
 
-    axes[1, 1].plot(ny_vals, exx[:, jmid] * 100, "-o", ms=3, label=r"$\varepsilon_{xx}$")
-    axes[1, 1].plot(ny_vals, eyy[:, jmid] * 100, "-s", ms=3, label=r"$\varepsilon_{yy}$")
+    axes[1, 1].plot(ny_vals, Eeng_xx[:, jmid] * 100, "-o", ms=3, label="Eeng_xx")
+    axes[1, 1].plot(ny_vals, Eeng_yy[:, jmid] * 100, "-s", ms=3, label="Eeng_yy")
     axes[1, 1].set_xlabel("y [px]")
     axes[1, 1].set_ylabel("strain [%]")
     axes[1, 1].legend(fontsize=8)
     axes[1, 1].grid(alpha=0.3)
-    fig.suptitle("2D DIC line profiles", fontsize=12)
+    fig.suptitle("2D DIC line profiles (nominal strain)", fontsize=12)
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path, dpi=cfg.dpi)
     plt.close(fig)
@@ -403,7 +396,8 @@ def animate(result: RunResult, field: str, path: Path, cfg: OutputConfig) -> Pat
     Parameters
     ----------
     field : str
-        ``"umag"`` for displacement magnitude, or a strain field name such as ``"exx"``.
+        ``"umag"`` for displacement magnitude, or a strain field name such as
+        ``"Eeng_xx"``.
     """
     Xr, Yr = np.meshgrid(np.unique(result.xs), np.unique(result.ys))
     deformed = getattr(cfg, "overlay_frame", "deformed") != "reference"
@@ -562,5 +556,7 @@ def render_all_figures(
         written["extras"].append(
             animate(result, "umag", anim_dir / f"displacement{suffix}", cfg)
         )
-        written["extras"].append(animate(result, "exx", anim_dir / f"exx{suffix}", cfg))
+        written["extras"].append(
+            animate(result, "Eeng_xx", anim_dir / f"Eeng_xx{suffix}", cfg)
+        )
     return written

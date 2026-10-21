@@ -143,7 +143,7 @@ def compute_noise_floor(
             gy = _to_grid(m.astype(float), xs, ys, m) > 0.5
             if gy.shape[0] >= 5 and gy.shape[1] >= 5:
                 sr = compute_strains(ux, uy, gy, _spacing(xs), _spacing(ys), strain_cfg)
-                e = sr["exx"]
+                e = sr["Eeng_xx"]
                 if np.isfinite(e).any():
                     s_rms.append(float(np.sqrt(np.nanmean(e[np.isfinite(e)] ** 2))))
 

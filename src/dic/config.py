@@ -111,8 +111,6 @@ class StrainConfig:
 
     #: Number of displacement samples per axis in the fitting window (odd, >= 3).
     window: int = 5
-    #: Warn when |engineering strain| exceeds this (small-strain validity limit).
-    engineering_validity_limit: float = 0.05
 
 
 # --------------------------------------------------------------------------------------

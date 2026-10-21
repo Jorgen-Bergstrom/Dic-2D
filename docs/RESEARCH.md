@@ -227,9 +227,11 @@ well-understood implementation is easier to validate and document than an integr
    producing a spurious strain; a 1 mm out-of-plane motion at 1 m is ~0.1 % strain.
 2. **Lens distortion / non-parallel axes.** Radial distortion and a tilted camera give a
    spatially varying bias that the calibration-free 2D pipeline cannot remove.
-3. **Small-strain validity.** The engineering (small-strain) definition `ε = (l−l₀)/l₀` and the
-   linearised `∂u/∂x` differ from finite strain by O(ε²); above a few percent the difference is
-   significant. A finite-strain (Green–Lagrange) measure must be offered.
+3. **Small-strain validity.** The linearised tensor `sym(F) − I` differs from finite strain by
+   O(ε²) and does not vanish under a finite rigid rotation. The nominal (Biot) strain
+   `V − I`, whose principal values are `λ_i − 1`, is valid at finite strain and matches the
+   `NE` output of commercial FE codes; true (logarithmic/Hencky) strain `T = ln V` is
+   offered as a second finite measure.
 4. **Speckle quality.** Speckle diameter should be ~3–5 px and coverage ~50 %; too-small speckles
    alias, too-large speckles force big subsets and poor spatial resolution.
 5. **Spatial resolution vs noise.** Strain is a derivative: it amplifies displacement noise, and
@@ -253,8 +255,8 @@ well-understood implementation is easier to validate and document than an integr
   a coarse multi-scale affine fallback, plus an *optional* incremental reference-updating mode,
 * automatic ROI masking by local-variance thresholding + morphology + erosion, with a user-mask
   override,
-* strain from a local plane fit (virtual strain gauge) with engineering **and** Green–Lagrange
-  measures, plus rotation, principal and equivalent strains,
+* strain from a local plane fit (virtual strain gauge) with nominal (Biot, Abaqus `NE`) **and**
+  true (logarithmic/Hencky, `ln V`) measures, plus rotation, principal and equivalent strains,
 * per-point uncertainty from the correlation Hessian and residual, and a synthetic zero-motion
   noise floor,
 * a full synthetic validation suite (`--validate`) covering all the required cases.
@@ -282,8 +284,8 @@ opaque for a validation report.
   spatially varying or non-linear illumination change (vignetting, shadows, specular hotspots).
 * **Speckle-like texture assumed** in the ROI. The automatic masker detects "textured vs flat";
   a flat but textured background (e.g. a printed grid) would be kept.
-* **Strain validity.** Engineering strain is reported but flagged invalid above a few percent;
-  Green–Lagrange strain is the finite-strain measure to trust at large deformation.
+* **Strain validity.** Nominal (Biot) strain `V − I` is reported and remains valid at finite
+  deformation; true (logarithmic/Hencky) strain `T = ln V` is also reported for comparison.
 * **Spatial resolution is the virtual strain gauge, not the pixel.** The reported strain is an
   average over `L_VSG`; peaks narrower than that are attenuated.
 * **Displacement is defined at the subset centre** and is a subset-averaged affine fit; the

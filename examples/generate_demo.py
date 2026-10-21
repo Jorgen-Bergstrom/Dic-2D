@@ -138,8 +138,12 @@ def generate(preset: str, output: Path, n_frames: int, seed: int) -> Path:
             rows.append({
                 "frame": i, "X_px": xs[k], "Y_px": ys[k],
                 "ux_px": gt["ux"][k], "uy_px": gt["uy"][k],
-                "exx": gt["exx"][k], "eyy": gt["eyy"][k], "gamma_xy": gt["gamma_xy"][k],
-                "Exx": gt["Exx"][k], "Eyy": gt["Eyy"][k], "Exy": gt["Exy"][k],
+                "Eeng_xx": gt["Eeng_xx"][k], "Eeng_yy": gt["Eeng_yy"][k],
+                "Eeng_xy": gt["Eeng_xy"][k], "Eeng_gamma_xy": gt["Eeng_gamma_xy"][k],
+                "J11": gt["F11"][k], "J12": gt["F12"][k],
+                "J21": gt["F21"][k], "J22": gt["F22"][k],
+                "Etr_xx": gt["Etr_xx"][k], "Etr_yy": gt["Etr_yy"][k],
+                "Etr_xy": gt["Etr_xy"][k],
             })
     gt_path = out_dir / "ground_truth_grid.csv"
     with open(gt_path, "w", newline="") as fh:
@@ -158,7 +162,9 @@ def generate(preset: str, output: Path, n_frames: int, seed: int) -> Path:
         "has_background": region is not None,
         "coordinate_convention": (
             "x = column (right), y = row (down); ux = x_deformed - X, uy = y_deformed - Y; "
-            "exx = du_x/dX, eyy = du_y/dY, gamma_xy = du_x/dY + du_y/dX (engineering, image frame)"
+            "Eeng_xx, Eeng_yy, Eeng_xy, Eeng_gamma_xy are the nominal (Biot) strain V - I "
+            "in the image frame, with principal values lambda_i - 1 (same measure as Abaqus NE); "
+            "Etr_xx, Etr_yy, Etr_xy are the true (logarithmic/Hencky) strain ln(V)"
         ),
         "deformation_parameters": [getattr(d, "description", type(d).__name__) for d in deformations],
         "ground_truth": "ground_truth_grid.csv",

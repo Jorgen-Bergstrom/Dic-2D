@@ -185,34 +185,73 @@ For each scalar displacement component the field is fitted locally with a first-
 fixed convolution whose kernels are the first two rows of the pseudo-inverse of the design matrix
 `[1, X, Y]`, so the whole field is computed in one pass.
 
-The displacement gradient and the strain measures (image frame, engineering definition):
+The displacement gradient and the deformation gradient (image frame, x right, y down):
 
 ```
-H = ⎡ u_x  u_y ⎤        exx = u_x        eyy = v_y        γ_xy = u_y + v_x
-    ⎣ v_x  v_y ⎦        exy = γ_xy / 2
+H = ⎡ u_x  u_y ⎤        F = I + H
+    ⎣ v_x  v_y ⎦
 ```
 
-Deformation gradient `F = I + H`, and the **Green–Lagrange** (finite) strain tensor
+The **primary strain measure is the nominal (Biot/engineering) strain**
 
 ```
-E = ½ (FᵀF − I)
-Exx = ½(F₁₁² + F₂₁² − 1),  Eyy = ½(F₁₂² + F₂₂² − 1),  Exy = ½(F₁₁F₁₂ + F₂₁F₂₂)
+ε_N = V − I = (F Fᵀ)^(1/2) − I
+V = left stretch tensor from the polar decomposition F = V R
 ```
+
+with components
+
+```
+Eeng_xx = V₁₁ − 1,   Eeng_yy = V₂₂ − 1,
+Eeng_xy = V₁₂,       Eeng_gamma_xy = 2 V₁₂
+```
+
+The principal values of `ε_N` are `λ_i − 1`, i.e. the engineering strains, and the principal
+directions are in the **current** configuration. This is the strain measure Abaqus reports as
+`NE` (“nominal strain”), so the output is directly comparable with an FE model. A rigid rotation
+gives `V = I`, hence `ε_N = 0`; a uniaxial stretch `λ` gives `λ − 1`.
+
+The **true (logarithmic/Hencky) strain** is also reported:
+
+```
+T = ln(V)
+```
+
+where `ln(V)` is the **matrix logarithm** of the symmetric positive-definite left stretch
+tensor—not an element-wise logarithm. Its components are
+
+```
+Etr_xx = (ln V)₁₁,   Etr_yy = (ln V)₂₂,   Etr_xy = (ln V)₁₂,   Etr_gamma_xy = 2 Etr_xy
+```
+
+The principal values of `T` are `ln(λ_i)` and its principal directions are in the current
+configuration. A rigid rotation gives `T = 0`, and a uniaxial stretch `λ` gives `Etr_xx = ln λ`.
+The matrix logarithm is evaluated in closed form from the symmetric eigen-decomposition of `V`.
+Writing `V = mean·(I + E)` with `E = (V − mean·I)/mean` traceless and
+`δ = (λ₁ − λ₂)/(λ₁ + λ₂) = rad(V)/mean(V)`,
+
+```
+ln(V) = ½ ln(det V) · I + (atanh(δ)/δ) · E
+```
+
+The coefficient uses its limit 1 when `δ → 0` (equal principal stretches), which makes the
+construction numerically stable for nearly equal eigenvalues.
 
 Also reported: small-angle rotation `ω = ½(v_x − u_y)`, finite rotation angle from the polar
-decomposition `R = F (FᵀF)^{-1/2}` (closed form for 2×2), principal strains (engineering and
-Green–Lagrange), and a von Mises equivalent strain assuming plane-strain incompressibility
-`ε_zz = −(ε_xx + ε_yy)`:
+decomposition `R = F (FᵀF)^{-1/2}` (closed form for 2×2), principal nominal and true strains,
+and von Mises equivalent strains. For the nominal components the small-strain plane-strain
+relation `Eeng_zz = −(Eeng_xx + Eeng_yy)` is used:
 
 ```
-ε_eq = √( (2/3) [ ε_xx² + ε_yy² + (ε_xx+ε_yy)² + 2 ε_xy² ] )
+Eeng_eq = √( (2/3) [ Eeng_xx² + Eeng_yy² + (Eeng_xx+Eeng_yy)² + 2 Eeng_xy² ] )
 ```
 
-**Small-strain validity.** The engineering tensor equals `sym(F) − I`; for a pure rotation of
-angle θ it equals `(cos θ − 1) I ≠ 0`, and for a stretch `λ` it is `λ − 1` whereas the true
-logarithmic strain is `ln λ`. The pipeline warns when `max|engineering strain|` exceeds
-`engineering_validity_limit` (default 0.05) and the Green–Lagrange fields are the ones to trust
-at large deformation.
+For true strain, isochoric plane strain gives `Etr_zz = −(Etr_xx + Etr_yy)` exactly, so the same
+formula is applied directly to `Etr_xx`, `Etr_yy`, `Etr_xy`:
+
+```
+Etr_eq = √( (2/3) [ Etr_xx² + Etr_yy² + (Etr_xx+Etr_yy)² + 2 Etr_xy² ] )
+```
 
 **Spatial resolution.** The reported strain is an average over the virtual strain gauge length
 `L_VSG = (window − 1)·step + subset` (iDICs Good Practices Guide, Ch. 5); a strain peak narrower
